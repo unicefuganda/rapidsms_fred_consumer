@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 
-import httplib2
-import base64
+import urllib2
 import json
-import time
-
-Http = httplib2.Http
-http = Http()
 
 JSON_EXTENSION = ".json"
 
@@ -24,7 +19,8 @@ class Fred_Facilities_Fetcher(object):
     # url is appended with .json by default
     def get(self, url, extension=JSON_EXTENSION,paging=True):
         url += extension + '?paging=' + str(paging).lower()
-        response, content = http.request(url, 'GET', headers=self.HEADERS)
+#        response, content = http.request(url, 'GET', headers=self.HEADERS)
+        response, content = urllib2.urlopen(url, 'GET', headers=self.HEADERS)
         return json.loads(content)
 
     def get_facility(self, url, facility_id, extension=JSON_EXTENSION):
