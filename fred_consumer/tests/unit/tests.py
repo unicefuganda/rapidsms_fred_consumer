@@ -1,5 +1,5 @@
 import unittest
-import fred_consumer.get_fred_facility
+from mtrack_project.rapidsms_fred_consumer.fred_consumer.fred_connect import Fred_Facilities_Fetcher
 
 CONNECTION_SETTING = {
   'user': 'sekiskylink',
@@ -15,14 +15,15 @@ URLS = {
 class Test_Facility_Matcher(unittest.TestCase):
 
     def setUp(self):
-        self.fetcher = fred_consumer.get_fred_facility.Fred_Facilities_Fetcher(CONNECTION_SETTING)
+        self.fetcher = Fred_Facilities_Fetcher(CONNECTION_SETTING)
 
     def test_get(self):
         obj = self.fetcher.get(URLS['facility_base_url']);
         self.assertNotEqual(obj,None)
 
-        obj = self.fetcher.get(URLS['test_facility_url']);
+        obj = self.fetcher.get(URLS['test_facility_url'])
         self.assertNotEqual(obj,None)
+
 
         obj = self.fetcher.get(URLS['test_facility_url'],paging=False);
         self.assertNotEqual(obj,None)

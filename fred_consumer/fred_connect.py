@@ -2,10 +2,10 @@
 
 import urllib2
 import json
+import base64
 
 JSON_EXTENSION = ".json"
 
-#Uses basic HTTP authorization
 class Fred_Facilities_Fetcher(object):
 
     # connection_setting : contains the user/password for the server
@@ -19,9 +19,9 @@ class Fred_Facilities_Fetcher(object):
     # url is appended with .json by default
     def get(self, url, extension=JSON_EXTENSION,paging=True):
         url += extension + '?paging=' + str(paging).lower()
-#        response, content = http.request(url, 'GET', headers=self.HEADERS)
-        response, content = urllib2.urlopen(url, 'GET', headers=self.HEADERS)
-        return json.loads(content)
+        req = urllib2.Request(url, headers=self.HEADERS)
+        response = urllib2.urlopen(req)
+        return json.loads(response.read())
 
     def get_facility(self, url, facility_id, extension=JSON_EXTENSION):
         extension = "/" + str(facility_id)  + extension
