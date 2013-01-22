@@ -31,7 +31,7 @@ class Fred_Facilities_Fetcher(object):
         url += extension
         for key, value in filters.items():
             url += '?' + str(key) + "=" + str(value)
-        return self.get(url,extension, paging=False)
+        return self.get(url,"", paging=False)
 
 
 class Update_Facilities(object):

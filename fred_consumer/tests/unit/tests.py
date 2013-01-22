@@ -1,5 +1,7 @@
 import unittest
-from mtrack_project.rapidsms_fred_consumer.fred_consumer.fred_connect import Fred_Facilities_Fetcher
+import urllib2
+from fred_consumer.tests.unit.mock_urllib_response import MockUrlLibResponse
+from fred_consumer.fred_connect import Fred_Facilities_Fetcher
 
 CONNECTION_SETTING = {
   'user': 'sekiskylink',
@@ -16,25 +18,41 @@ class Test_Facility_Matcher(unittest.TestCase):
 
     def setUp(self):
         self.fetcher = Fred_Facilities_Fetcher(CONNECTION_SETTING)
+        urllib2.urlopen = mock_urlopen
+
 
     def test_get(self):
         obj = self.fetcher.get(URLS['facility_base_url']);
-        self.assertNotEqual(obj,None)
+        self.assertIsNotNone(obj)
 
         obj = self.fetcher.get(URLS['test_facility_url'])
-        self.assertNotEqual(obj,None)
-
+        self.assertIsNotNone(obj)
 
         obj = self.fetcher.get(URLS['test_facility_url'],paging=False);
-        self.assertNotEqual(obj,None)
+        self.assertIsNotNone(obj)
+
 
     def test_get_facility(self):
         obj = self.fetcher.get_facility(URLS['facility_base_url'],URLS['test_facility_id']);
-        self.assertNotEqual(obj,None)
+        self.assertIsNotNone(obj)
 
     def test_get_filtered_facilities(self):
         obj = self.fetcher.get_filtered_facilities(URLS['facility_base_url'], {'updatedSince': '2012-11-16T00:00:00Z'});
-        self.assertNotEqual(obj,None)
+        self.assertIsNotNone(obj)
 
-if __name__ == '__main__':
-    unittest.main()
+class Test_Parse_Facility(unittest.TestCase):
+    def setUp(self):
+        self.fetcher = Fred_Facilities_Fetcher(CONNECTION_SETTING)
+
+
+    def test_get_facilities(self):
+        urllib2.urlopen = mock_urlopen
+        facilities = self.fetcher.get(URLS['test_facility_url']);
+
+def mock_urlopen(request):
+    import os
+    filedir = os.path.dirname(__file__)
+    json_filename = request.get_full_url().rsplit('/',1)[-1].rsplit('?',1)[0]
+    path = os.path.join(filedir,'../fixtures/%s' % json_filename)
+    jason = open(path).read()
+    return MockUrlLibResponse(jason)
