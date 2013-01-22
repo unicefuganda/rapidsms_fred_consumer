@@ -4,9 +4,50 @@
 <html lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Fred Consumer</title>
+  <title>Fred Consumer - Settings</title>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/reset/reset-min.css">
+  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}fred_consumer/stylesheets/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}fred_consumer/stylesheets/style.css"/>
 </head>
 <body>
 
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <ul class="nav">
+          <li class="active"><a href="{% url fred_config_page %}">FRED Settings</a></li>
+          <li><a href="#">Failures</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <br><br><br><br>
+  <div class="container">
+    <form class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label" for="fred_settings">Provider URL</label>
+        <div class="controls">
+          <input type="text" id="fred_settings" value="{{ settings.url }}" placeholder="Provider URL">
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="fred_username">Username</label>
+        <div class="controls">
+          <input type="text" id="fred_username" value="{{ settings.username }}" placeholder="Username">
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="fred_password">Password</label>
+        <div class="controls">
+          <input type="password" id="fred_password" value="{{ settings.password }}" placeholder="Password">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </body>
 </html>
