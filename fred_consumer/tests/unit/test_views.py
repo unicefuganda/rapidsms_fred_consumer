@@ -1,7 +1,7 @@
-from django.utils import unittest
+from django.test import TestCase
 from django.test.client import Client
 
-class TestViews(unittest.TestCase):
+class TestViews(TestCase):
 
   def test_fred_config_page(self):
     client = Client()
