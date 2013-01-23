@@ -18,10 +18,11 @@ class Test_Facility_Matcher(unittest.TestCase):
 
     def setUp(self):
         self.fetcher = Fred_Facilities_Fetcher(CONNECTION_SETTING)
-        urllib2.urlopen = mock_urlopen
 
 
     def test_get(self):
+        urllib2.urlopen = mock_urlopen
+
         obj = self.fetcher.get(URLS['facility_base_url']);
         self.assertIsNotNone(obj)
 
@@ -33,21 +34,15 @@ class Test_Facility_Matcher(unittest.TestCase):
 
 
     def test_get_facility(self):
+        urllib2.urlopen = mock_urlopen
         obj = self.fetcher.get_facility(URLS['facility_base_url'],URLS['test_facility_id']);
         self.assertIsNotNone(obj)
 
     def test_get_filtered_facilities(self):
+        urllib2.urlopen = mock_urlopen
         obj = self.fetcher.get_filtered_facilities(URLS['facility_base_url'], {'updatedSince': '2012-11-16T00:00:00Z'});
         self.assertIsNotNone(obj)
 
-class Test_Parse_Facility(unittest.TestCase):
-    def setUp(self):
-        self.fetcher = Fred_Facilities_Fetcher(CONNECTION_SETTING)
-
-
-    def test_get_facilities(self):
-        urllib2.urlopen = mock_urlopen
-        facilities = self.fetcher.get(URLS['test_facility_url']);
 
 def mock_urlopen(request):
     import os
