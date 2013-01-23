@@ -6,6 +6,7 @@ from nose.tools import assert_equals
 from splinter import Browser
 from lettuce.django import django_url
 from mtrack_project.rapidsms_fred_consumer.fred_consumer.models import *
+from time import sleep
 
 @before.all
 def set_browser():
@@ -30,7 +31,11 @@ def validate_landing_page_fields(step):
 
 @step(u'Given I have my fred settings added')
 def load_fred_settings(step):
-  world.fred_config = FredConfig.objects.create(url="http://fred-provider.com/api/v1/", username="django", password="django")
+  world.fred_config = {
+    'url'     : FredConfig.objects.create(key=FredConfig.URL_KEY      , value="http://fred-provider.com/api/v1/"),
+    'username': FredConfig.objects.create(key=FredConfig.USERNAME_KEY , value="django"),
+    'password': FredConfig.objects.create(key=FredConfig.PASSWORD_KEY , value="django"),
+  }
 
 @step(u'And I am on the Fred landing page')
 def and_i_am_on_the_fred_landing_page(step):
@@ -38,9 +43,9 @@ def and_i_am_on_the_fred_landing_page(step):
 
 @step(u'Then I should see all the fields populated with values')
 def validate_landing_page_fields_populated(step):
-  assert world.browser.find_by_id('fred_settings')[0].value == world.fred_config.url
-  assert world.browser.find_by_id('fred_username')[0].value == world.fred_config.username
-  assert world.browser.find_by_id('fred_password')[0].value == world.fred_config.password
+  assert world.browser.find_by_id('fred_settings')[0].value == world.fred_config['url'].value
+  assert world.browser.find_by_id('fred_username')[0].value == world.fred_config['username'].value
+  assert world.browser.find_by_id('fred_password')[0].value == world.fred_config['password'].value
 
 def visit(url):
   world.browser.visit(django_url(url))
