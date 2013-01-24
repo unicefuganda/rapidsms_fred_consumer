@@ -26,10 +26,6 @@ class FredConfig(models.Model):
       config.value = params[key.lower()]
       config.save()
 
-class HealthFacilityIdMap(models.Model):
-    uid = models.CharField(primary_key=True,max_length=50,blank=False, null=False)
-    url = models.URLField(verify_exists=False)
-
 class JobStatus(models.Model):
   PENDING = "PENDING"
   SUCCESS = "SUCCESS"
@@ -42,3 +38,10 @@ class JobStatus(models.Model):
   def succeeded(self, success):
     self.status = self.SUCCESS if success else self.FAILED
     self.save()
+
+class HealthFacilityIdMap(models.Model):
+    uid = models.CharField(primary_key=True,max_length=50,blank=False, null=False)
+    url = models.URLField(verify_exists=False)
+
+    def __unicode__(self):
+        return u'facility id map uid = %s url = %s' %(self.uid, self.url)

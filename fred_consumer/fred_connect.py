@@ -3,10 +3,11 @@
 import urllib2
 import json
 import base64
+from fred_consumer.models import HealthFacilityIdMap
 
 JSON_EXTENSION = ".json"
 
-class Fred_Facilities_Fetcher(object):
+class FredFacilitiesFetcher(object):
 
     # connection_setting : contains the user/password for the server
     def __init__(self,connection_setting):
@@ -33,11 +34,17 @@ class Fred_Facilities_Fetcher(object):
             url += '?' + str(key) + "=" + str(value)
         return self.get(url,"", paging=False)
 
+class ReadFacility(object):
+    def __init__(self,facility):
+        self.facility = facility
 
-class Update_Facilities(object):
+    def create_facility_map(self):
+        HealthFacilityIdMap(uid=self.facility['id'], url=self.facility['url']).save()
 
-    def __init__(self,facilities_list):
-        self.facilities = facilities_list
+    def process_facility(self):
+        if not self.does_facility_exists():
+            self.create_facility_map()
+        return self.facility
 
-    def does_facility_exists_in_mtrack(self,facility):
-        facility['id']
+    def does_facility_exists(self):
+        return bool(HealthFacilityIdMap.objects.filter(uid=self.facility['id']))
