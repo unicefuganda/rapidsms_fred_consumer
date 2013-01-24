@@ -23,28 +23,28 @@
   </div>
   <br><br><br><br>
   <div class="container">
-    <form class="form-horizontal">
+    <form class="form-horizontal" method="post" action="{% url fred_update_config %}">
       <div class="control-group">
         <label class="control-label" for="fred_settings">Provider URL</label>
         <div class="controls">
-          <input type="text" id="fred_settings" value="{{ url }}" placeholder="Provider URL">
+          <input type="text" name="url" id="fred_url" value="{{ url }}" placeholder="Provider URL">
         </div>
       </div>
       <div class="control-group">
         <label class="control-label" for="fred_username">Username</label>
         <div class="controls">
-          <input type="text" id="fred_username" value="{{ username }}" placeholder="Username">
+          <input type="text" name="username" id="fred_username" value="{{ username }}" placeholder="Username">
         </div>
       </div>
       <div class="control-group">
         <label class="control-label" for="fred_password">Password</label>
         <div class="controls">
-          <input type="password" id="fred_password" value="{{ password }}" placeholder="Password">
+          <input type="password" name="password" id="fred_password" value="{{ password }}" placeholder="Password">
         </div>
       </div>
       <div class="control-group">
         <div class="controls">
-          <button type="submit" class="btn">Update</button>
+          <button type="submit" id="update" class="btn">Update</button>
         </div>
       </div>
     </form>
