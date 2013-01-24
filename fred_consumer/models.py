@@ -1,10 +1,12 @@
 from django.db import models
+import datetime
 
 class FredConfig(models.Model):
   URL_KEY = 'URL'
   USERNAME_KEY = 'USERNAME'
   PASSWORD_KEY = 'PASSWORD'
   KEYS = [URL_KEY, USERNAME_KEY, PASSWORD_KEY]
+
   key       = models.CharField(max_length=255, unique=True)
   value     = models.CharField(max_length=255)
 
@@ -28,3 +30,18 @@ class HealthFacilityIdMap(models.Model):
     uid = models.CharField(primary_key=True,max_length=50,blank=False, null=False)
     url = models.URLField(verify_exists=False)
 
+class JobStatus(models.Model):
+  PENDING = "PENDING"
+  SUCCESS = "SUCCESS"
+  FAILED  = "FAILED"
+
+  job_id = models.CharField(max_length=100)
+  time   = models.DateTimeField(auto_now=True)
+  status = models.CharField(max_length=50)
+
+  def succeeded(self, success):
+    if success:
+      self.status = self.SUCCESS
+    else:
+      self.status = self.FAILED
+    self.save()
