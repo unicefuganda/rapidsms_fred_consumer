@@ -1,6 +1,7 @@
 Feature: Fred Configuration page
 
   Scenario: Landing page
+    Given I am logged in
     Given I have no configurations stored
     Given I am on the Fred landing page
     Then I should see all the fields

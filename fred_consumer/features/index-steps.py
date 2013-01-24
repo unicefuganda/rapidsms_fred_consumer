@@ -18,6 +18,13 @@ def close_browser(*args):
   world.browser.quit()
   FredConfig.objects.all().delete()
 
+@step(u'Given I am logged in')
+def log_in(step):
+  visit("/fredconsumer/")
+  world.browser.fill("username", "smoke")
+  world.browser.fill("password", "password")
+  world.browser.find_by_css('input[type=submit]').first.click()
+
 @step(u'Given I am on the Fred landing page')
 def access_landing_page(step):
   visit("/fredconsumer/")
@@ -59,8 +66,7 @@ def add_new_configration(step):
 
 @step(u'And I should see success message')
 def verify_success_message(step):
-  # assert world.browser.is_text_present("Configurations updated successfully!")
-  assert True == True
+  assert world.browser.is_text_present("Configurations updated successfully!")
 
 @step(u'And I change the configurations')
 def update_configrations(step):

@@ -23,6 +23,13 @@
   </div>
   <br><br><br><br>
   <div class="container">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
     <form class="form-horizontal" method="post" action="{% url fred_update_config %}">
       <div class="control-group">
         <label class="control-label" for="fred_settings">Provider URL</label>
