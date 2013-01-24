@@ -22,6 +22,7 @@
     </div>
   </div>
   <br><br><br><br>
+
   <div class="container">
     {% if messages %}
       {% for message in messages %}
@@ -30,6 +31,10 @@
         </div>
       {% endfor %}
     {% endif %}
+  </div>
+
+  <div class="container well">
+    <h4>FRED API configurations</h4><br>
     <form class="form-horizontal" method="post" action="{% url fred_update_config %}">
       <div class="control-group">
         <label class="control-label" for="fred_settings">Provider URL</label>
@@ -55,6 +60,20 @@
         </div>
       </div>
     </form>
+  </div>
+  <br><br>
+  <div class="container well">
+    <h4>Job Status</h4>
+    {% if last_job %}
+      Last job started at <span id="last-sync-time">{{ last_job.time }}</span>&nbsp;&nbsp;&nbsp;
+      {% if last_job.status == 'PENDING' %}
+        <a href="{% url terminate_job %}" class="btn btn-danger">Terminate job</a>
+      {% else %}
+        <a href="{% url sync_now %}" class="btn btn-primary">Sync Now</a>
+      {% endif %}
+    {% else %}
+      <a href="{% url sync_now %}" class="btn btn-primary">Sync Now</a>
+    {% endif %}
   </div>
 </body>
 </html>

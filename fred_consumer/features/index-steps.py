@@ -8,6 +8,8 @@ from lettuce.django import django_url
 from fred_consumer.models import *
 from time import sleep
 from random import randint
+from datetime import datetime
+import time
 
 @before.all
 def set_browser():
@@ -17,6 +19,7 @@ def set_browser():
 def close_browser(*args):
   world.browser.quit()
   FredConfig.objects.all().delete()
+  JobStatus.objects.all().delete()
 
 @step(u'Given I am logged in')
 def log_in(step):
@@ -71,6 +74,29 @@ def verify_success_message(step):
 @step(u'And I change the configurations')
 def update_configrations(step):
   add_new_configration(step)
+
+@step(u'Given I have no previous job')
+def flush_job_status(step):
+  JobStatus.objects.all().delete()
+
+@step(u'And I start a job')
+def run_job(step):
+  world.browser.click_link_by_text('Sync Now')
+  assert world.browser.is_text_present("Sync has been scheduled! Refresh in few seconds.")
+  visit("/fredconsumer/")
+
+@step(u'Then I should see pending current job with timestamp')
+def then_i_should_see_pending_current_job_with_timestamp(step):
+  assert world.browser.is_text_present(datetime.now().strftime("%b. %d, %Y, %I:%M"))
+
+@step(u'I terminate the job')
+def terminate_job(step):
+  world.browser.click_link_by_text('Terminate job')
+  assert world.browser.is_text_present("Sync terminated!")
+
+@step(u'And I should see option to start a job')
+def option_for_run_job(step):
+  assert world.browser.is_text_present("Sync Now")
 
 def visit(url):
   world.browser.visit(django_url(url))
