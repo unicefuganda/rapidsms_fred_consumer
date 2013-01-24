@@ -40,8 +40,5 @@ class JobStatus(models.Model):
   status = models.CharField(max_length=50)
 
   def succeeded(self, success):
-    if success:
-      self.status = self.SUCCESS
-    else:
-      self.status = self.FAILED
+    self.status = self.SUCCESS if success else self.FAILED
     self.save()
