@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from mtrack_project.rapidsms_fred_consumer.fred_consumer.models import *
+from fred_consumer.models import *
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 

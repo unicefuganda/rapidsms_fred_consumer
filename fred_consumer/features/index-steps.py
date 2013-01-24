@@ -5,7 +5,7 @@ from django.test.client import Client
 from nose.tools import assert_equals
 from splinter import Browser
 from lettuce.django import django_url
-from mtrack_project.rapidsms_fred_consumer.fred_consumer.models import *
+from fred_consumer.models import *
 from time import sleep
 from random import randint
 
