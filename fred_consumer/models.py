@@ -40,8 +40,9 @@ class JobStatus(models.Model):
     self.save()
 
 class HealthFacilityIdMap(models.Model):
-    uid = models.CharField(primary_key=True,max_length=50,blank=False, null=False)
-    url = models.URLField(verify_exists=False)
+    uid = models.CharField(primary_key=True, max_length=50)
+    url = models.URLField(verify_exists=True)
 
-    def __unicode__(self):
-        return u'facility id map uid = %s url = %s' %(self.uid, self.url)
+    @classmethod
+    def store(self, uid, url):
+        self.objects.get_or_create(uid=uid, url=url)

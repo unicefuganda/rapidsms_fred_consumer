@@ -58,3 +58,45 @@ class TestJobStatus(TestCase):
 
     status = JobStatus.objects.all()[0]
     assert status.status == JobStatus.FAILED
+
+class TestHealthFacilityIdMap(TestCase):
+
+    def test_updation_on_uid(self):
+        uid = "uid"
+        url = "url"
+        HealthFacilityIdMap.objects.create(uid=uid, url=url)
+
+        self.failUnless(HealthFacilityIdMap.objects.filter(uid=uid)[0])
+
+        HealthFacilityIdMap.objects.create(uid="xxx", url=url)
+        self.failUnless(HealthFacilityIdMap.objects.filter(uid="xxx")[0])
+
+        map = HealthFacilityIdMap()
+        map.uid = uid
+
+        another_url = "some other url"
+        map.url = another_url
+        map.save()
+
+        maps = HealthFacilityIdMap.objects.filter(uid=uid)
+        assert len(maps) == 1
+        print maps[0].uid, maps[0].url
+        assert maps[0].url == another_url
+
+    def test_uid_as_primary_key(self):
+        uid = "uid"
+        url = "url"
+        map = HealthFacilityIdMap.objects.create(uid=uid, url=url)
+        try:
+            map.id
+            assert True == False, "ID is the Primary key"
+        except AttributeError as e:
+            assert True == True
+        else:
+            assert True == False, "ID is the Primary key"
+
+    def test_store(self):
+        uid = "1"
+        url = "url"
+        map = HealthFacilityIdMap.store(uid,url)
+        self.failUnless(HealthFacilityIdMap.objects.filter(uid=uid)[0])
