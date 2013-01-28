@@ -45,6 +45,8 @@ class TestFredFacilitiesFetcher(TestCase):
         obj = self.fetcher.get_all_facilities()
         facility = obj['facilities'][0]
         uuid = '6VeE8JrylXn'
+        assert len(HealthFacilityIdMap.objects.filter(uid=uuid)) == 0
         assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 0
         self.fetcher.process_facility(facility)
         self.failUnless(HealthFacilityBase.objects.filter(uuid=uuid)[0])
+        self.failUnless(HealthFacilityIdMap.objects.filter(uid=uuid)[0])
