@@ -17,7 +17,7 @@ class FredFacilitiesFetcher(object):
             'Authorization': 'Basic '+auth
         }
 
-    def get(self, extension=JSON_EXTENSION, query = None):
+    def get(self, extension, query = None):
         url = self.BASE_URL + extension
         if query:
             url += "?" + query
@@ -25,8 +25,12 @@ class FredFacilitiesFetcher(object):
         response = urllib2.urlopen(request)
         return json.loads(response.read())
 
+    def get_all_facilities(self):
+      extension = "/facilities" + JSON_EXTENSION
+      return self.get(extension)
+
     def get_facility(self, facility_id):
-        extension = "/" + str(facility_id)  + JSON_EXTENSION
+        extension = "/facilities/" + str(facility_id)  + JSON_EXTENSION
         return self.get(extension)
 
     def get_filtered_facilities(self, filters):
@@ -34,4 +38,5 @@ class FredFacilitiesFetcher(object):
         for key, value in filters.items():
             query.append(key + "=" + value)
         query = "&".join(query)
-        return self.get(query=query)
+        extension = "/facilities.json"
+        return self.get(query=query, extension=extension)

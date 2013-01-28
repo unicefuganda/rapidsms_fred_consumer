@@ -1,0 +1,15 @@
+- request:
+    body: null
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
+        charset="UTF-8", Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
+    method: GET
+    url: !!python/unicode '/api-fred/v1/facilities.json'
+  response:
+    body: {string: '{"facilities":[{"id":"6VeE8JrylXn","name":" BHARTI","active":true,"url":"http://dhis/api-fred/v1/facilities/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+        Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}]}'}
+    headers: {cache-control: 'no-cache, no-store, max-age=0', connection: close, content-language: en-US,
+      content-length: '823', content-type: application/json;charset=UTF-8, date: 'Mon,
+        28 Jan 2013 10:55:17 GMT', etag: '"0a7db4b0e14c3d46937dec6343cb694cf"', expires: 'Thu,
+        01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=7D32EA76F9B8E0263390C56F3E97389C;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}
