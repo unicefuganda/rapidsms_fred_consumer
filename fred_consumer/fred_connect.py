@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-
 import urllib2
 import json
 import base64
 from fred_consumer.models import HealthFacilityIdMap
+from healthmodels.models.HealthFacility import HealthFacilityBase
 
 JSON_EXTENSION = ".json"
 
@@ -40,3 +40,9 @@ class FredFacilitiesFetcher(object):
         query = "&".join(query)
         extension = "/facilities.json"
         return self.get(query=query, extension=extension)
+
+    def process_facility(self, facility):
+      uuid = facility['id']
+      existing_facility = HealthFacilityBase.objects.filter(uuid=uuid) or HealthFacilityBase(uuid=uuid)
+      existing_facility.name = facility['name']
+      existing_facility.save()

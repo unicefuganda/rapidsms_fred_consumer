@@ -5,6 +5,7 @@ from fred_consumer.fred_connect import *
 from fred_consumer.models import *
 from fred_consumer.tests.unit.health_facility_id_map_factory import HealthFacilityIdMapFactory
 import vcr, sys, os, fred_consumer
+from healthmodels.models.HealthFacility import HealthFacilityBase
 
 URLS = {
     'facility_base_url'  : FredConfig.get_fred_configs()['url'],
@@ -38,3 +39,12 @@ class TestFredFacilitiesFetcher(TestCase):
       with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
         obj = self.fetcher.get_filtered_facilities({'updatedSince': '2013-01-16T00:00:00Z'});
         self.assertIsNotNone(obj)
+
+    def test_process_facility(self):
+      with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/test_get_all_facilities.yaml"):
+        obj = self.fetcher.get_all_facilities()
+        facility = obj['facilities'][0]
+        uuid = '6VeE8JrylXn'
+        assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 0
+        self.fetcher.process_facility(facility)
+        self.failUnless(HealthFacilityBase.objects.filter(uuid=uuid)[0])
