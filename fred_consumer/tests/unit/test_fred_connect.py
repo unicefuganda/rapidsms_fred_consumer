@@ -15,7 +15,7 @@ URLS = {
 
 FRED_CONFIG = {"url": "http://fred-provider.com/api/v1/facilities///", "username": "django", "password": "django"}
 
-class TestFacilityMatcher(TestCase):
+class TestFredFacilitiesFetcher(TestCase):
 
     def setUp(self):
         FredConfig.store_fred_configs(FRED_CONFIG)
