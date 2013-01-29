@@ -5,7 +5,7 @@ from fred_consumer.fred_connect import *
 from fred_consumer.models import *
 from fred_consumer.tests.unit.health_facility_id_map_factory import HealthFacilityIdMapFactory
 import vcr, sys, os, fred_consumer
-from healthmodels.models.HealthFacility import HealthFacilityBase
+from healthmodels.models.HealthFacility import HealthFacilityBase, HealthFacilityType
 
 URLS = {
     'facility_base_url'  : FredConfig.get_fred_configs()['url'],
@@ -24,7 +24,6 @@ class TestFredFacilitiesFetcher(TestCase):
         FredConfig.store_fred_configs(FRED_CONFIG)
         self.fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
 
-
     def test_get_all_facilities(self):
       with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
         obj = self.fetcher.get_all_facilities()
@@ -40,13 +39,21 @@ class TestFredFacilitiesFetcher(TestCase):
         obj = self.fetcher.get_filtered_facilities({'updatedSince': '2013-01-16T00:00:00Z'});
         self.assertIsNotNone(obj)
 
-    def test_process_facility(self):
+    def test_sync(self):
       with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/test_get_all_facilities.yaml"):
-        obj = self.fetcher.get_all_facilities()
-        facility = obj['facilities'][0]
         uuid = '6VeE8JrylXn'
+        initial_name = "BATMAN"
+
+        HealthFacilityType.objects.filter(name="hcii").delete()
+        HealthFacilityBase.objects.filter(uuid=uuid).delete()
+
+        HealthFacilityType.objects.create(name="hcii")
+        facility = HealthFacilityBase.objects.create(uuid=uuid, name=initial_name)
+        self.failUnless(facility.id)
         assert len(HealthFacilityIdMap.objects.filter(uuid=uuid)) == 0
-        assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 0
-        self.fetcher.process_facility(facility)
-        self.failUnless(HealthFacilityBase.objects.filter(uuid=uuid)[0])
+        assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 1
+        self.fetcher.sync()
+        facility = HealthFacilityBase.objects.filter(uuid=uuid)[0]
+        self.failUnless(facility)
         self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
+        assert facility.name == "BATMAN HC II"

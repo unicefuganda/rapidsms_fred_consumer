@@ -3,7 +3,7 @@ import urllib2
 import json
 import base64
 from fred_consumer.models import HealthFacilityIdMap
-from healthmodels.models.HealthFacility import HealthFacilityBase
+from fred_consumer.tasks import process_facility
 
 JSON_EXTENSION = ".json"
 
@@ -41,9 +41,7 @@ class FredFacilitiesFetcher(object):
         extension = "/facilities.json"
         return self.get(query=query, extension=extension)
 
-    def process_facility(self, facility):
-      uuid = facility['id']
-      HealthFacilityIdMap.store(uuid, facility['url'])
-      existing_facility = HealthFacilityBase.objects.filter(uuid=uuid) or HealthFacilityBase(uuid=uuid)
-      existing_facility.name = facility['name']
-      existing_facility.save()
+    def sync(self):
+      facilities = self.get_all_facilities()
+      for facility in facilities['facilities']:
+        process_facility(facility)
