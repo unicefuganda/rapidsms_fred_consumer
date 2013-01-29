@@ -3,7 +3,6 @@ import urllib2
 import json
 import base64
 from fred_consumer.models import HealthFacilityIdMap
-from fred_consumer.tasks import process_facility
 
 JSON_EXTENSION = ".json"
 
@@ -42,6 +41,8 @@ class FredFacilitiesFetcher(object):
         return self.get(query=query, extension=extension)
 
     def sync(self):
+      from fred_consumer.tasks import process_facility
+
       facilities = self.get_all_facilities()
       for facility in facilities['facilities']:
-        process_facility(facility)
+        process_facility.delay(facility)
