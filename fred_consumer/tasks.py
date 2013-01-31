@@ -1,6 +1,7 @@
 from celery import Celery, current_task
-from fred_consumer.models import JobStatus, HealthFacilityIdMap
+from fred_consumer.models import *
 from healthmodels.models.HealthFacility import *
+from fred_consumer.fred_connect import *
 import re
 
 celery = Celery()
@@ -20,8 +21,8 @@ def find_facility_type(text):
 
 @celery.task
 def run_fred_sync():
-  JobStatus.objects.create(job_id=current_task.request.id, status=JobStatus.PENDING)
-  return True
+  fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+  fetcher.sync(current_task.request.id)
 
 @celery.task
 def process_facility(facility):

@@ -45,14 +45,22 @@ class TestFredFacilitiesFetcher(TestCase):
     @patch('fred_consumer.tasks.process_facility.delay')
     def test_sync(self, mock_process_facility):
       with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/test_get_all_facilities.yaml"):
-        self.fetcher.sync()
-      assert mock_process_facility.called
+        assert len(JobStatus.objects.all()) == 0
+        self.fetcher.sync("JOB ID")
+        assert JobStatus.objects.all()[0].status == JobStatus.SUCCESS
+        assert mock_process_facility.called
+
+    def test_sync_failed(self):
+      self.fetcher.fetch_facilities = MagicMock(side_effect=Exception('Boom!'))
+      assert len(JobStatus.objects.all()) == 0
+      self.fetcher.sync("JOB ID")
+      assert JobStatus.objects.all()[0].status == JobStatus.FAILED
 
     @patch('fred_consumer.tasks.process_facility.delay')
     def test_sync_with_filters(self, mock_process_facility):
       status = JobStatus.objects.create(job_id="XXX", status=JobStatus.SUCCESS)
       self.fetcher.get_filtered_facilities = MagicMock(return_value={"facilities":[]})
-      self.fetcher.sync()
+      self.fetcher.sync("JOB ID")
       self.fetcher.get_filtered_facilities.assert_called_once_with({'updatedSince': status.time.strftime("%Y-%m-%dT%H:%M:%SZ")})
       assert mock_process_facility.called == False
 
@@ -77,3 +85,8 @@ class TestFredFacilitiesFetcher(TestCase):
       self.failUnless(facility)
       self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
       assert facility.name == "BATMAN HC II"
+
+    @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.sync')
+    def test_sync_task(self, mocked_sync):
+      fred_consumer.tasks.run_fred_sync()
+      assert mocked_sync.called

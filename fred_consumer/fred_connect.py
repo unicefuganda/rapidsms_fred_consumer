@@ -41,14 +41,21 @@ class FredFacilitiesFetcher(object):
         extension = "/facilities.json"
         return self.get(query=query, extension=extension)
 
-    def sync(self):
-      from fred_consumer.tasks import process_facility
-
+    def fetch_facilities(self):
       try:
-        job_status = JobStatus.objects.latest('time')
+        job_status = JobStatus.objects.filter(status=JobStatus.SUCCESS).latest('time')
         facilities = self.get_filtered_facilities({'updatedSince': job_status.time.strftime("%Y-%m-%dT%H:%M:%SZ")})
       except ObjectDoesNotExist:
         facilities = self.get_all_facilities()
+      return facilities
 
-      for facility in facilities['facilities']:
-        process_facility.delay(facility)
+    def sync(self, job_id):
+      from fred_consumer.tasks import process_facility
+      status = JobStatus.objects.create(job_id=job_id, status=JobStatus.PENDING)
+      try:
+        facilities = self.fetch_facilities()
+        for facility in facilities['facilities']:
+          process_facility.delay(facility)
+        status.succeeded(True)
+      except Exception:
+        status.succeeded(False)
