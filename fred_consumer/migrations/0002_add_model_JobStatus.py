@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.create_table('fred_consumer_jobstatus', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('job_id', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('status', self.gf('django.db.models.fields.CharField')(max_length=50)),
         ))
         db.send_create_signal('fred_consumer', ['JobStatus'])

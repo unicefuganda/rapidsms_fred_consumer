@@ -46,7 +46,7 @@ class TestJobStatus(TestCase):
 
     assert status.job_id == "XXX"
     assert status.status == JobStatus.SUCCESS
-    assert status.time > initial_time
+    assert status.time == initial_time
 
   def test_succeeded(self):
     status = JobStatus.objects.create(job_id="XXX", status=JobStatus.PENDING)

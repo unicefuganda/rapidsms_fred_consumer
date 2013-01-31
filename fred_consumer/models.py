@@ -32,7 +32,7 @@ class JobStatus(models.Model):
   FAILED  = "FAILED"
 
   job_id = models.CharField(max_length=100)
-  time   = models.DateTimeField(auto_now=True)
+  time   = models.DateTimeField(auto_now_add=True)
   status = models.CharField(max_length=50)
 
   def succeeded(self, success):

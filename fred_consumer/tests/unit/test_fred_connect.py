@@ -8,7 +8,7 @@ import vcr, sys, os, fred_consumer
 from healthmodels.models.HealthFacility import HealthFacilityBase, HealthFacilityType
 from mock import *
 from fred_consumer.tasks import *
-import json
+import json, datetime
 
 URLS = {
     'facility_base_url'  : FredConfig.get_fred_configs()['url'],
@@ -47,6 +47,14 @@ class TestFredFacilitiesFetcher(TestCase):
       with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/test_get_all_facilities.yaml"):
         self.fetcher.sync()
       assert mock_process_facility.called
+
+    @patch('fred_consumer.tasks.process_facility.delay')
+    def test_sync_with_filters(self, mock_process_facility):
+      status = JobStatus.objects.create(job_id="XXX", status=JobStatus.SUCCESS)
+      self.fetcher.get_filtered_facilities = MagicMock(return_value={"facilities":[]})
+      self.fetcher.sync()
+      self.fetcher.get_filtered_facilities.assert_called_once_with({'updatedSince': status.time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+      assert mock_process_facility.called == False
 
     def test_process_facility(self):
       facility_json = json.loads('{"facilities":[{"id":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"url":"http://dhis/api-fred/v1/facilities/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}]}')['facilities'][0]

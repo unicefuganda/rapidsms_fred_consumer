@@ -2,7 +2,8 @@
 import urllib2
 import json
 import base64
-from fred_consumer.models import HealthFacilityIdMap
+from fred_consumer.models import HealthFacilityIdMap, JobStatus
+from django.core.exceptions import ObjectDoesNotExist
 
 JSON_EXTENSION = ".json"
 
@@ -43,6 +44,11 @@ class FredFacilitiesFetcher(object):
     def sync(self):
       from fred_consumer.tasks import process_facility
 
-      facilities = self.get_all_facilities()
+      try:
+        job_status = JobStatus.objects.latest('time')
+        facilities = self.get_filtered_facilities({'updatedSince': job_status.time.strftime("%Y-%m-%dT%H:%M:%SZ")})
+      except ObjectDoesNotExist:
+        facilities = self.get_all_facilities()
+
       for facility in facilities['facilities']:
         process_facility.delay(facility)
