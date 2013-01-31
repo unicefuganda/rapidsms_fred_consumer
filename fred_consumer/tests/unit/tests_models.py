@@ -3,6 +3,7 @@ from django.core import management
 from fred_consumer.models import *
 from django.db import IntegrityError
 from time import sleep
+import json
 
 class TestFredConfig(TestCase):
 
@@ -100,3 +101,10 @@ class TestHealthFacilityIdMap(TestCase):
         url = "url"
         map = HealthFacilityIdMap.store(uuid,url)
         self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
+
+class TestFailures(TestCase):
+  def test_storage(self):
+    exception = Exception('Failed for whatever reasons')
+    failed_json = json.dumps({'name': 'BATMAN'})
+    failure = Failure.objects.create(exception=exception, json=failed_json)
+    self.failUnless(failure.id)

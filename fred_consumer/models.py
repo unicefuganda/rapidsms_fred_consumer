@@ -46,3 +46,8 @@ class HealthFacilityIdMap(models.Model):
     @classmethod
     def store(self, uuid, url):
         self.objects.get_or_create(uuid=uuid, url=url)
+
+class Failure(models.Model):
+  time      = models.DateTimeField(auto_now_add=True)
+  exception = models.TextField()
+  json      = models.TextField()
