@@ -86,6 +86,15 @@ class TestFredFacilitiesFetcher(TestCase):
       self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
       assert facility.name == "BATMAN HC II"
 
+    def test_process_facility_failures(self):
+      facility = {'name': 'name'}
+      assert len(Failure.objects.all()) == 0
+      fred_consumer.tasks.process_facility(facility)
+      assert len(Failure.objects.all()) == 1
+      failure = Failure.objects.all()[0]
+      assert failure.exception == "KeyError:'id'"
+      assert failure.json == "{'name': 'name'}"
+
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.sync')
     def test_sync_task(self, mocked_sync):
       fred_consumer.tasks.run_fred_sync()

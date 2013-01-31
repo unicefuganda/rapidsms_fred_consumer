@@ -108,3 +108,4 @@ class TestFailures(TestCase):
     failed_json = json.dumps({'name': 'BATMAN'})
     failure = Failure.objects.create(exception=exception, json=failed_json)
     self.failUnless(failure.id)
+    assert failure.time != None

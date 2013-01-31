@@ -26,11 +26,15 @@ def run_fred_sync():
 
 @celery.task
 def process_facility(facility):
-  uuid = facility['id']
-  name = facility['name']
-  HealthFacilityIdMap.store(uuid, facility['url'])
-  existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
-  if existing_facility:
-    existing_facility = existing_facility[0]
-    existing_facility.name = name.strip()
-    existing_facility.save()
+  try:
+    uuid = facility['id']
+    name = facility['name']
+    HealthFacilityIdMap.store(uuid, facility['url'])
+    existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
+    if existing_facility:
+      existing_facility = existing_facility[0]
+      existing_facility.name = name.strip()
+      existing_facility.save()
+  except Exception, e:
+    exception = type(e).__name__ +":"+ str(e)
+    Failure.objects.create(exception=exception, json=facility)
