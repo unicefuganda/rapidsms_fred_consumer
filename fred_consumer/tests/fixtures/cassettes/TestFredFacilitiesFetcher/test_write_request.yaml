@@ -1,0 +1,13 @@
+- request:
+    body: '{"active": "true", "name": "BBB", "coordinates": [2.2222, 0.1111]}'
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '66',
+      Content-Type: application/json; charset="UTF-8", Host: dhis, User-Agent: Python-urllib/2.7}
+    method: PUT
+    url: /api-fred/v1///facilities/nBDPw7Qhd7r.json
+  response:
+    body: {string: '{}'}
+    headers: {connection: close, content-length: '2', content-type: application/json;charset=UTF-8,
+      date: 'Mon, 04 Feb 2013 14:11:48 GMT', etag: '"099914b932bd37a50b983c5e7c90ae93b"',
+      server: nginx/1.1.19, set-cookie: JSESSIONID=5A3BA100152B3541CAA4B2D17E80E215;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}
