@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import urllib
 import urllib2
 import json
 import base64
@@ -6,6 +7,7 @@ from fred_consumer.models import HealthFacilityIdMap, JobStatus
 from django.core.exceptions import ObjectDoesNotExist
 
 JSON_EXTENSION = ".json"
+MANDATORY_FIELDS = ["name", "active", "coordinates"]
 
 class FredFacilitiesFetcher(object):
 
@@ -17,21 +19,29 @@ class FredFacilitiesFetcher(object):
             'Authorization': 'Basic '+auth
         }
 
-    def get(self, extension, query = None):
-        url = self.BASE_URL + extension
+    def get(self, extension, url = None, query = None):
+        url = (url or self.BASE_URL) + extension
         if query:
             url += "?" + query
+
         request = urllib2.Request(url, headers=self.HEADERS)
         response = urllib2.urlopen(request)
         return json.loads(response.read())
 
+    def write(self, facility_url, facility_data, action="POST"):
+        request = urllib2.Request(facility_url, data = json.dumps(facility_data), headers = self.HEADERS)
+        request.get_method = lambda: action
+        response = urllib2.urlopen(request)
+        return response
+
+
     def get_all_facilities(self):
-      extension = "/facilities" + JSON_EXTENSION
-      return self.get(extension)
+        extension = "/facilities" + JSON_EXTENSION
+        return self.get(extension=extension)
 
     def get_facility(self, facility_id):
         extension = "/facilities/" + str(facility_id)  + JSON_EXTENSION
-        return self.get(extension)
+        return self.get(extension=extension)
 
     def get_filtered_facilities(self, filters):
         query = []
@@ -50,12 +60,25 @@ class FredFacilitiesFetcher(object):
       return facilities
 
     def sync(self, job_id):
-      from fred_consumer.tasks import process_facility
-      status = JobStatus.objects.create(job_id=job_id, status=JobStatus.PENDING)
-      try:
-        facilities = self.fetch_facilities()
-        for facility in facilities['facilities']:
-          process_facility.delay(facility)
-        status.succeeded(True)
-      except Exception:
-        status.succeeded(False)
+        from fred_consumer.tasks import process_facility
+        status = JobStatus.objects.create(job_id=job_id, status=JobStatus.PENDING)
+        try:
+            facilities = self.fetch_facilities()
+            for facility in facilities['facilities']:
+                process_facility.delay(facility)
+            status.succeeded(True)
+        except Exception:
+            status.succeeded(False)
+
+    def update_facilities_in_provider(self, facility):
+        facility_url = HealthFacilityIdMap.objects.get(uid=facility['id']).url
+        facility_in_fred = self.get(url = facility_url, extension=JSON_EXTENSION)
+        for field in MANDATORY_FIELDS:
+            if not facility.has_key(field):
+                facility[field] = facility_in_fred[field]
+
+        self.write(facility_url, facility, "PUT")
+
+
+
+

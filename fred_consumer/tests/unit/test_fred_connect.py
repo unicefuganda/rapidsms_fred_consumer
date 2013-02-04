@@ -3,23 +3,20 @@ import urllib2
 from fred_consumer.tests.unit.mock_urllib_response import MockUrlLibResponse
 from fred_consumer.fred_connect import *
 from fred_consumer.models import *
-from fred_consumer.tests.unit.health_facility_id_map_factory import HealthFacilityIdMapFactory
 import vcr, sys, os, fred_consumer
 from healthmodels.models.HealthFacility import HealthFacilityBase, HealthFacilityType
 from mock import *
 from fred_consumer.tasks import *
-import json, datetime
+import json
 
-URLS = {
-    'facility_base_url'  : FredConfig.get_fred_configs()['url'],
-    'test_facility_url'  : FredConfig.get_fred_configs()['url'] + '/nBDPw7Qhd7r',
-    'test_facility_url2' : FredConfig.get_fred_configs()['url'] +  '/pADPw7Qhd7r',
-    'test_facility_id'   : 'nBDPw7Qhd7r',
-    'test_facility_id2'  : 'pADPw7Qhd7r'
-}
 
 FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
 FIXTURES = os.path.abspath(fred_consumer.__path__[0]) + "/tests/fixtures/cassettes/"
+
+URLS = {
+    'test_facility_url'  : FRED_CONFIG['url'] + 'facilities/nBDPw7Qhd7r',
+    'test_facility_id'   : 'nBDPw7Qhd7r'
+}
 
 class TestFredFacilitiesFetcher(TestCase):
 
@@ -28,19 +25,35 @@ class TestFredFacilitiesFetcher(TestCase):
         self.fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
 
     def test_get_all_facilities(self):
-      with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
-        obj = self.fetcher.get_all_facilities()
-        self.assertIsNotNone(obj)
-
-    def test_get_facility(self):
-      with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
-        obj = self.fetcher.get_facility(URLS['test_facility_id'])
-        self.assertIsNotNone(obj)
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            obj = self.fetcher.get_all_facilities()
+            self.assertIsNotNone(obj)
 
     def test_get_filtered_facilities(self):
-      with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
-        obj = self.fetcher.get_filtered_facilities({'updatedSince': '2013-01-16T00:00:00Z'});
-        self.assertIsNotNone(obj)
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            obj = self.fetcher.get_filtered_facilities({'updatedSince': '2013-01-16T00:00:00Z'});
+            self.assertIsNotNone(obj)
+
+    def test_get_facility(self):
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            obj = self.fetcher.get_facility(URLS['test_facility_id'])
+            self.assertIsNotNone(obj)
+
+    def test_write_request(self):
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            obj = self.fetcher.write(URLS['test_facility_url'] + ".json",{"name": "BBB", "active": "true", "coordinates": [2.2222,0.1111]},"PUT")
+            self.assertEqual(200,obj.getcode())
+
+    def test_update_facility_in_provider(self):
+        facility = {"name": "CCC", "id": "nBDPw7Qhd7r"}
+        HealthFacilityIdMap.objects.get = MagicMock(return_value=HealthFacilityIdMap.objects.create(url= URLS['test_facility_url']))
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            self.fetcher.update_facilities_in_provider(facility)
+
+            updated_facility = self.fetcher.get_facility(URLS['test_facility_id'])
+            self.assertEqual(updated_facility['name'],"CCC")
+
 
     @patch('fred_consumer.tasks.process_facility.delay')
     def test_sync(self, mock_process_facility):
