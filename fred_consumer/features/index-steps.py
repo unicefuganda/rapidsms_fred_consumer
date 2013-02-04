@@ -14,6 +14,8 @@ import time
 @before.all
 def set_browser():
   world.browser = Browser()
+  FredConfig.objects.all().delete()
+  JobStatus.objects.all().delete()
 
 @after.all
 def close_browser(*args):
@@ -88,7 +90,8 @@ def run_job(step):
 @step(u'Then I should see pending current job with timestamp')
 def then_i_should_see_pending_current_job_with_timestamp(step):
   now = datetime.now()
-  assert world.browser.is_text_present(now.strftime("%b. %d, %Y, ") + now.strftime("%I:%M").strip("0"))
+  timestamp = now.strftime("%b. ") + now.strftime("%d, %Y, ").strip("0") + now.strftime("%I:%M").strip("0")
+  assert world.browser.is_text_present(timestamp)
 
 @step(u'I terminate the job')
 def terminate_job(step):
@@ -105,9 +108,9 @@ def visit(url):
 def generate_config_values():
   number = str(randint(1,9999))
   world.fred_config = {
-    'url': "http://fred-provider.com/" + number,
-    'username': "django" + number,
-    'password': "django" + number,
+    'url': "http://dhis/api-fred/v1/",
+    'username': "api" + number,
+    'password': "P@ssw0rd" + number,
   }
 
 def fill_config_values():
