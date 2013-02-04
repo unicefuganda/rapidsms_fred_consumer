@@ -66,7 +66,12 @@ def flush_configurations(step):
 
 @step(u'And I enter new configurations')
 def add_new_configration(step):
-  generate_config_values()
+  number = str(randint(1,9999))
+  world.fred_config = {
+    'url': "http://dhis/api-fred/v1/" + number,
+    'username': "api" + number,
+    'password': "P@ssw0rd" + number,
+  }
   fill_config_values()
 
 @step(u'And I should see success message')
@@ -75,7 +80,12 @@ def verify_success_message(step):
 
 @step(u'And I change the configurations')
 def update_configrations(step):
-  add_new_configration(step)
+  world.fred_config = {
+    'url': "http://dhis/api-fred/v1/",
+    'username': "api",
+    'password': "P@ssw0rd",
+  }
+  fill_config_values()
 
 @step(u'Given I have no previous job')
 def flush_job_status(step):
@@ -104,14 +114,6 @@ def option_for_run_job(step):
 
 def visit(url):
   world.browser.visit(django_url(url))
-
-def generate_config_values():
-  number = str(randint(1,9999))
-  world.fred_config = {
-    'url': "http://dhis/api-fred/v1/",
-    'username': "api" + number,
-    'password': "P@ssw0rd" + number,
-  }
 
 def fill_config_values():
   world.browser.fill("url", world.fred_config['url'])
