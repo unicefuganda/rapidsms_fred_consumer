@@ -23,3 +23,8 @@ Feature: Fred Configuration page
   Scenario: Processing Facility - Reversion
     Given I process a facility
     And I should see reversion logs
+
+  Scenario: Failures page
+    Given I have few failures from Fred sync
+    And I am on the Fred failures page
+    Then I should see failures paginated

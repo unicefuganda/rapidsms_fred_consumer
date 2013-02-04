@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from fred_consumer.tasks import run_fred_sync
 from celery.task.control import revoke
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def fred_config_page(request):
   settings = FredConfig.get_fred_configs()
@@ -29,3 +30,18 @@ def terminate_job(request):
   last_job.succeeded(False)
   messages.success(request, "Sync terminated!")
   return redirect(reverse('fred_config_page'))
+
+def failures(request):
+  failures = Failure.objects.extra(order_by=["-time"]).all()
+  paginator = Paginator(failures, 10)
+  page = request.GET.get('page')
+  page = int(page) if page else 1
+
+  try:
+    failures = paginator.page(page)
+  except PageNotAnInteger:
+    failures = paginator.page(1)
+  except EmptyPage:
+    failures = paginator.page(paginator.num_pages)
+
+  return render(request, 'fred_consumer/failures.html', {"failures": failures})

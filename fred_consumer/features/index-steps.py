@@ -140,6 +140,29 @@ def and_i_should_see_reversion_logs(step):
   assert version.revision.comment == UPDATE_COMMENT
   assert version.revision.user == API_USER
 
+@step(u'Given I have few failures from Fred sync')
+def and_i_have_few_failures_from_fred_sync(step):
+  Failure.objects.all().delete()
+  facility = {'name': 'name'}
+  for _ in xrange(15):
+    process_facility(facility)
+
+@step(u'And I am on the Fred failures page')
+def and_i_am_on_the_fred_failures_page(step):
+  visit("/fredconsumer/failures/")
+
+@step(u'Then I should see failures paginated')
+def then_i_should_see_failures_paginated(step):
+  world.browser.is_text_present("Time")
+  world.browser.is_text_present("Exception")
+  world.browser.is_text_present("JSON Body")
+  world.browser.is_text_present("<Page 1 of 2>")
+  world.browser.find_by_css("a[class=next]").first.click()
+  world.browser.is_text_present("Time")
+  world.browser.is_text_present("Exception")
+  world.browser.is_text_present("JSON Body")
+  world.browser.is_text_present("<Page 2 of 2>")
+
 def visit(url):
   world.browser.visit(django_url(url))
 
