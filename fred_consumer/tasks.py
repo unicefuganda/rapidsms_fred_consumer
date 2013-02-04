@@ -29,7 +29,7 @@ def run_fred_sync():
 
 @celery.task
 def process_facility(facility):
-  # try:
+  try:
     uuid = facility['id']
     name = facility['name']
     HealthFacilityIdMap.store(uuid, facility['url'])
@@ -41,6 +41,6 @@ def process_facility(facility):
         existing_facility.save()
         reversion.set_user(API_USER)
         reversion.set_comment(UPDATE_COMMENT)
-  # except Exception, e:
-  #   exception = type(e).__name__ +":"+ str(e)
-  #   Failure.objects.create(exception=exception, json=facility)
+  except Exception, e:
+    exception = type(e).__name__ +":"+ str(e)
+    Failure.objects.create(exception=exception, json=facility)
