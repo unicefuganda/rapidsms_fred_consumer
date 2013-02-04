@@ -9,7 +9,8 @@ from fred_consumer.models import *
 from time import sleep
 from random import randint
 from datetime import datetime
-import time
+import time, reversion, json
+from fred_consumer.tasks import *
 
 @before.all
 def set_browser():
@@ -111,6 +112,32 @@ def terminate_job(step):
 @step(u'And I should see option to start a job')
 def option_for_run_job(step):
   assert world.browser.is_text_present("Sync Now")
+
+@step(u'Given I process a facility')
+def given_i_process_a_facility(step):
+  facility_json = json.loads('{"facilities":[{"id":"6VeE8JrylXn","name":"Apo","active":true,"url":"http://dhis/api-fred/v1/facilities/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}]}')['facilities'][0]
+
+  facility_json['name'] = "Apo" + str(randint(1,9999))
+  facility = HealthFacilityBase.objects.get(id=2919)
+  facility.uuid = facility_json['id']
+  facility.save()
+  reversion.get_for_object(facility).delete()
+
+  facility = HealthFacilityBase.objects.get(id=2919)
+  assert facility.name != facility_json['name']
+  process_facility(facility_json)
+
+  facility = HealthFacilityBase.objects.get(id=2919)
+  assert facility.name == facility_json['name']
+
+@step(u'And I should see reversion logs')
+def and_i_should_see_reversion_logs(step):
+  facility = HealthFacilityBase.objects.get(id=2919)
+  version_list = reversion.get_for_object(facility)
+  assert len(version_list) == 1
+  version = version_list[0]
+  assert version.revision.comment == UPDATE_COMMENT
+  assert version.revision.user == API_USER
 
 def visit(url):
   world.browser.visit(django_url(url))

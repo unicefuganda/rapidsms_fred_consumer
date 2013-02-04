@@ -19,3 +19,7 @@ Feature: Fred Configuration page
     Then I should see pending current job with timestamp
     And I terminate the job
     And I should see option to start a job
+
+  Scenario: Processing Facility - Reversion
+    Given I process a facility
+    And I should see reversion logs
