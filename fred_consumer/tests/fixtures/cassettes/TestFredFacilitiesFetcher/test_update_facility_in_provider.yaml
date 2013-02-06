@@ -15,17 +15,16 @@
     status: {code: 200, message: OK}
 
 - request:
-    body: '{"active": true, "name": "CCC", "coordinates": [2.2222, 0.1111], "id":
-      "nBDPw7Qhd7r"}'
-    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '85',
+    body: '{"active": true, "name": "CCC", "coordinates": [2.2222, 0.1111]}'
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '64',
       Content-Type: application/json; charset="UTF-8", Host: dhis, User-Agent: Python-urllib/2.7}
     method: PUT
     url: /api-fred/v1///facilities/nBDPw7Qhd7r
   response:
     body: {string: '{}'}
     headers: {connection: close, content-length: '2', content-type: application/json;charset=UTF-8,
-      date: 'Mon, 04 Feb 2013 16:32:15 GMT', etag: '"099914b932bd37a50b983c5e7c90ae93b"',
-      server: nginx/1.1.19, set-cookie: JSESSIONID=8CAB0373D90E07AFD86377158DF337F7;
+      date: 'Tue, 05 Feb 2013 12:57:38 GMT', etag: '"099914b932bd37a50b983c5e7c90ae93b"',
+      server: nginx/1.1.19, set-cookie: JSESSIONID=84C1CCC28F88DA2DCFA3097143F13F68;
         Path=/; HttpOnly}
     status: {code: 200, message: OK}
 
@@ -42,5 +41,23 @@
       content-length: '819', content-type: application/json;charset=UTF-8, date: 'Mon,
         04 Feb 2013 16:45:10 GMT', etag: '"07b0b8363d00c5456487a979a40c49dee"', expires: 'Thu,
         01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=134CE03CFF48AB3CB60FD7A9B4EF84B4;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}
+
+
+
+- request:
+    body: null
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
+        charset="UTF-8", Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
+    method: GET
+    url: !!python/unicode '/api-fred/v1/facilities/nBDPw7Qhd7r.json'
+  response:
+    body: {string: '{"id":"nBDPw7Qhd7r","name":"CCC","active":true,"url":"http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r","createdAt":"2012-08-14T09:59:50.324+0000","updatedAt":"2013-02-05T12:48:40.052+0000","coordinates":[2.2222,0.1111],"identifiers":[],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+        Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}'}
+    headers: {cache-control: 'no-cache, no-store, max-age=0', connection: close, content-language: en-US,
+      content-length: '819', content-type: application/json;charset=UTF-8, date: 'Tue,
+        05 Feb 2013 12:48:40 GMT', etag: '"0b4cd94d11de9053dd4175e158d1062cf"', expires: 'Thu,
+        01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=56B9F3774DFD52A3E1694929617A9BA4;
         Path=/; HttpOnly}
     status: {code: 200, message: OK}
