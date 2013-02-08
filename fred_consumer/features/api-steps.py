@@ -20,8 +20,8 @@ def given_i_try_to_create_an_invalid_facility(step):
   try:
     connector.write(credentials['url'], {'name':"Invalid facility"})
   except HTTPError as error:
-    world.lastError = error 
+    world.lastResponse = error.code
 
 @step(u'Then an error is returned')
 def then_an_error_is_returned(step):
-  assert not(world.lastError == None)
+  assert world.lastResponse == 422 
