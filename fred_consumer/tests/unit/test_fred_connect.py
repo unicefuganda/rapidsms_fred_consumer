@@ -8,7 +8,6 @@ from healthmodels.models.HealthFacility import HealthFacilityBase, HealthFacilit
 from mock import *
 from fred_consumer.tasks import *
 import json
-from random import randint
 
 
 FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
@@ -140,7 +139,7 @@ class TestFredFacilitiesFetcher(TestCase):
             self.assertEqual(updated_facility['name'], facility.name)
 
     def test_send_facility_update_failure_with_etag(self):
-        facility = HealthFacility.objects.create(name = "new name" + str(randint(1,9999)), uuid= URLS['test_facility_id'])
+        facility = HealthFacility.objects.create(name = "new name 12345", uuid= URLS['test_facility_id'])
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
