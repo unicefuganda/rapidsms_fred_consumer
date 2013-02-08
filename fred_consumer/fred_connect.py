@@ -24,22 +24,25 @@ class FredFacilitiesFetcher(object):
             url += "?" + query
         request = urllib2.Request(url, headers=self.HEADERS)
         response = urllib2.urlopen(request)
+        return response
+
+    def get_json(self, extension, url = None, query = None):
+        response = self.get(extension, url, query)
         return json.loads(response.read())
 
     def write(self, facility_url, facility_data, action="POST"):
         request = urllib2.Request(facility_url + JSON_EXTENSION, data = json.dumps(facility_data), headers = self.HEADERS)
         request.get_method = lambda: action
-        print facility_url + JSON_EXTENSION, json.dumps(facility_data)
         response = urllib2.urlopen(request)
         return response
 
     def get_all_facilities(self):
         extension = "/facilities" + JSON_EXTENSION
-        return self.get(extension=extension)
+        return self.get_json(extension=extension)
 
     def get_facility(self, facility_id):
         extension = "/facilities/" + str(facility_id)  + JSON_EXTENSION
-        return self.get(extension=extension)
+        return self.get_json(extension=extension)
 
     def get_filtered_facilities(self, filters):
         query = []
@@ -47,7 +50,7 @@ class FredFacilitiesFetcher(object):
             query.append(key + "=" + value)
         query = "&".join(query)
         extension = "/facilities.json"
-        return self.get(query=query, extension=extension)
+        return self.get_json(query=query, extension=extension)
 
     def fetch_facilities(self):
       try:
@@ -70,6 +73,7 @@ class FredFacilitiesFetcher(object):
 
     def update_facilities_in_provider(self, facility_id, facility):
         facility_url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
-        facility_in_fred = self.get(url = facility_url, extension=JSON_EXTENSION)
+        response = self.get(url = facility_url, extension=JSON_EXTENSION)
+        facility_in_fred = json.loads(response.read())
         facility = dict(facility_in_fred.items() + facility.items())
         self.write(facility_url, facility, "PUT")
