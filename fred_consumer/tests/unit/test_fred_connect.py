@@ -47,7 +47,7 @@ class TestFredFacilitiesFetcher(TestCase):
 
     def test_update_facility_in_provider(self):
         facility = {"name": "CCC"}
-        HealthFacilityIdMap.objects.get = MagicMock(return_value=HealthFacilityIdMap.objects.create(url= URLS['test_facility_url']))
+        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             self.fetcher.update_facilities_in_provider("nBDPw7Qhd7r", facility)
