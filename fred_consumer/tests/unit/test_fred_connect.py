@@ -114,13 +114,34 @@ class TestFredFacilitiesFetcher(TestCase):
       fred_consumer.tasks.run_fred_sync()
       assert mocked_sync.called
 
-    def test_send_facility_update(self):
+    def test_send_facility_update_without_etag(self):
+        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        facility_json = { 'name': facility.name }
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
+            response = self.fetcher.get("/facilities/" + facility.uuid + ".json")
+            response.info().getheader = MagicMock(return_value = None)
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
+            self.fetcher.get = MagicMock(return_value = response)
+            self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
+            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            updated_facility = fetcher.get_facility(URLS['test_facility_id'])
+            self.assertEqual(updated_facility['name'], facility.name)
+
+    def test_send_facility_update_with_etag(self):
         facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             fred_consumer.tasks.send_facility_update(facility)
             updated_facility = self.fetcher.get_facility(URLS['test_facility_id'])
+            print "******"
+            print updated_facility['name']
+            print facility.name
             self.assertEqual(updated_facility['name'], facility.name)
 
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.update_facilities_in_provider')

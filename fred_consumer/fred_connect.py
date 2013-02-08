@@ -30,8 +30,9 @@ class FredFacilitiesFetcher(object):
         response = self.get(extension, url, query)
         return json.loads(response.read())
 
-    def write(self, facility_url, facility_data, action="POST"):
-        request = urllib2.Request(facility_url + JSON_EXTENSION, data = json.dumps(facility_data), headers = self.HEADERS)
+    def write(self, facility_url, facility_data, action="POST", headers={}):
+        headers.update(self.HEADERS)
+        request = urllib2.Request(facility_url + JSON_EXTENSION, data = json.dumps(facility_data), headers = headers)
         request.get_method = lambda: action
         response = urllib2.urlopen(request)
         return response
@@ -76,4 +77,8 @@ class FredFacilitiesFetcher(object):
         response = self.get(url = facility_url, extension=JSON_EXTENSION)
         facility_in_fred = json.loads(response.read())
         facility = dict(facility_in_fred.items() + facility.items())
-        self.write(facility_url, facility, "PUT")
+        headers = {}
+        etag = response.info().getheader('ETag')
+        if etag:
+            headers["ETag"] = etag
+        self.write(facility_url, facility, "PUT", headers)

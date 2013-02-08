@@ -51,7 +51,6 @@ def send_facility_update(health_facility):
         facility = {'name': health_facility.name}
         fetcher.update_facilities_in_provider(health_facility.uuid, facility)
     except Exception, e:
-        print type(e).__name__ +":"+ str(e)
         exception = type(e).__name__ +":"+ str(e)
         facility['uuid'] = health_facility.uuid
         Failure.objects.create(exception=exception, json=json.dumps(facility), action = "PUT")
