@@ -8,6 +8,7 @@ from healthmodels.models.HealthFacility import HealthFacilityBase, HealthFacilit
 from mock import *
 from fred_consumer.tasks import *
 import json
+from random import randint
 
 
 FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
@@ -44,17 +45,6 @@ class TestFredFacilitiesFetcher(TestCase):
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             obj = self.fetcher.write(URLS['test_facility_url'], {"name": "BBB", "active": "true", "coordinates": [2.2222,0.1111]},"PUT")
             self.assertEqual(200,obj.getcode())
-
-    def test_update_facility_in_provider(self):
-        facility = {"name": "CCC"}
-        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
-
-        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
-            self.fetcher.update_facilities_in_provider("nBDPw7Qhd7r", facility)
-
-            updated_facility = self.fetcher.get_facility(URLS['test_facility_id'])
-            self.assertEqual(updated_facility['name'],"CCC")
-
 
     @patch('fred_consumer.tasks.process_facility.delay')
     def test_sync(self, mock_process_facility):
@@ -135,17 +125,41 @@ class TestFredFacilitiesFetcher(TestCase):
     def test_send_facility_update_with_etag(self):
         facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        facility_json = { 'name': facility.name }
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
             response = self.fetcher.get("/facilities/" + URLS['test_facility_id'] + ".json")
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
             self.fetcher.get = MagicMock(return_value = response)
-            fred_consumer.tasks.send_facility_update(facility)
+            self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
-            updated_facility = self.fetcher.get_facility(URLS['test_facility_id'])
+            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            updated_facility = fetcher.get_facility(URLS['test_facility_id'])
             self.assertEqual(updated_facility['name'], facility.name)
+
+    def test_send_facility_update_failure_with_etag(self):
+        facility = HealthFacility.objects.create(name = "new name" + str(randint(1,9999)), uuid= URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        facility_json = { 'name': facility.name }
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
+            response = self.fetcher.get("/facilities/" + facility.uuid + ".json")
+            response.info().getheader = MagicMock(return_value = "Rajini")
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
+            self.fetcher.get = MagicMock(return_value = response)
+            try:
+                self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
+                assert True == False, "Call Succeeded"
+            except Exception, e:
+                assert str(e) == "HTTP Error 412: Precondition Failed"
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
+            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            updated_facility = fetcher.get_facility(URLS['test_facility_id'])
+            assert updated_facility['name'] != facility.name
 
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.update_facilities_in_provider')
     def test_send_facility_update_http_failure(self, mock_update_facilities_in_provider):
