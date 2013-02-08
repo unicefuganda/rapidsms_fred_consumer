@@ -51,3 +51,4 @@ class Failure(models.Model):
   time      = models.DateTimeField(auto_now_add=True)
   exception = models.TextField()
   json      = models.TextField()
+  action = models.TextField(default="GET")

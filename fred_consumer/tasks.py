@@ -44,3 +44,14 @@ def process_facility(facility):
   except Exception, e:
     exception = type(e).__name__ +":"+ str(e)
     Failure.objects.create(exception=exception, json=facility)
+
+def send_facility_update(health_facility):
+    try:
+        fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+        facility = {'name': health_facility.name}
+        fetcher.update_facilities_in_provider(health_facility.uuid, facility)
+    except Exception, e:
+        exception = type(e).__name__ +":"+ str(e)
+        facility['uuid'] = health_facility.uuid
+        Failure.objects.create(exception=exception, json=json.dumps(facility), action = "PUT")
+

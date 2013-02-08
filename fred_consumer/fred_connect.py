@@ -7,7 +7,6 @@ from fred_consumer.models import HealthFacilityIdMap, JobStatus
 from django.core.exceptions import ObjectDoesNotExist
 
 JSON_EXTENSION = ".json"
-MANDATORY_FIELDS = ["name", "active", "coordinates"]
 
 class FredFacilitiesFetcher(object):
 
@@ -23,17 +22,16 @@ class FredFacilitiesFetcher(object):
         url = (url or self.BASE_URL) + extension
         if query:
             url += "?" + query
-
         request = urllib2.Request(url, headers=self.HEADERS)
         response = urllib2.urlopen(request)
         return json.loads(response.read())
 
     def write(self, facility_url, facility_data, action="POST"):
-        request = urllib2.Request(facility_url, data = json.dumps(facility_data), headers = self.HEADERS)
+        request = urllib2.Request(facility_url + JSON_EXTENSION, data = json.dumps(facility_data), headers = self.HEADERS)
         request.get_method = lambda: action
+        print facility_url + JSON_EXTENSION, json.dumps(facility_data)
         response = urllib2.urlopen(request)
         return response
-
 
     def get_all_facilities(self):
         extension = "/facilities" + JSON_EXTENSION
@@ -70,15 +68,8 @@ class FredFacilitiesFetcher(object):
         except Exception:
             status.succeeded(False)
 
-    def update_facilities_in_provider(self, facility):
-        facility_url = HealthFacilityIdMap.objects.get(uid=facility['id']).url
+    def update_facilities_in_provider(self, facility_id, facility):
+        facility_url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
         facility_in_fred = self.get(url = facility_url, extension=JSON_EXTENSION)
-        for field in MANDATORY_FIELDS:
-            if not facility.has_key(field):
-                facility[field] = facility_in_fred[field]
-
+        facility = dict(facility_in_fred.items() + facility.items())
         self.write(facility_url, facility, "PUT")
-
-
-
-

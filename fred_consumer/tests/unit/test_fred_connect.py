@@ -14,8 +14,9 @@ FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password
 FIXTURES = os.path.abspath(fred_consumer.__path__[0]) + "/tests/fixtures/cassettes/"
 
 URLS = {
-    'test_facility_url'  : FRED_CONFIG['url'] + 'facilities/nBDPw7Qhd7r',
-    'test_facility_id'   : 'nBDPw7Qhd7r'
+    'test_facility_url'      : FRED_CONFIG['url'] + 'facilities/nBDPw7Qhd7r',
+    'test_facility_id'       : 'nBDPw7Qhd7r',
+    'test_wrong_facility_id' : 'naDPw7Qhd7B'
 }
 
 class TestFredFacilitiesFetcher(TestCase):
@@ -41,15 +42,15 @@ class TestFredFacilitiesFetcher(TestCase):
 
     def test_write_request(self):
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
-            obj = self.fetcher.write(URLS['test_facility_url'] + ".json",{"name": "BBB", "active": "true", "coordinates": [2.2222,0.1111]},"PUT")
+            obj = self.fetcher.write(URLS['test_facility_url'], {"name": "BBB", "active": "true", "coordinates": [2.2222,0.1111]},"PUT")
             self.assertEqual(200,obj.getcode())
 
     def test_update_facility_in_provider(self):
-        facility = {"name": "CCC", "id": "nBDPw7Qhd7r"}
+        facility = {"name": "CCC"}
         HealthFacilityIdMap.objects.get = MagicMock(return_value=HealthFacilityIdMap.objects.create(url= URLS['test_facility_url']))
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
-            self.fetcher.update_facilities_in_provider(facility)
+            self.fetcher.update_facilities_in_provider("nBDPw7Qhd7r", facility)
 
             updated_facility = self.fetcher.get_facility(URLS['test_facility_id'])
             self.assertEqual(updated_facility['name'],"CCC")
@@ -112,3 +113,41 @@ class TestFredFacilitiesFetcher(TestCase):
     def test_sync_task(self, mocked_sync):
       fred_consumer.tasks.run_fred_sync()
       assert mocked_sync.called
+
+    def test_send_facility_update(self):
+        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            fred_consumer.tasks.send_facility_update(facility)
+            updated_facility = self.fetcher.get_facility(URLS['test_facility_id'])
+            self.assertEqual(updated_facility['name'], facility.name)
+
+    @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.update_facilities_in_provider')
+    def test_send_facility_update_http_failure(self, mock_update_facilities_in_provider):
+        assert len(Failure.objects.all()) == 0
+        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        mock_update_facilities_in_provider.side_effect = Exception('HTTP ERROR')
+        fred_consumer.tasks.send_facility_update(facility)
+        assert mock_update_facilities_in_provider.called
+        assert len(Failure.objects.all()) == 1
+        failure = Failure.objects.all()[0]
+        assert failure.exception == "Exception:HTTP ERROR"
+        facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'] }
+        assert failure.json == json.dumps(facility_json)
+        assert failure.action == "PUT"
+
+    def test_send_facility_update_facility_doesnt_exist_failure(self):
+        assert len(Failure.objects.all()) == 0
+        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        fred_consumer.tasks.send_facility_update(facility)
+        assert len(Failure.objects.all()) == 1
+        failure = Failure.objects.all()[0]
+        assert failure.exception == "DoesNotExist:HealthFacilityIdMap matching query does not exist."
+        facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'] }
+        assert failure.json == json.dumps(facility_json)
+        assert failure.action == "PUT"
+
+
+
