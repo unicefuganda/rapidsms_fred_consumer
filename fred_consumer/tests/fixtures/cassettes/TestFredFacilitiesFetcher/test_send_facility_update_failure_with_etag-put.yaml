@@ -1,5 +1,5 @@
 - request:
-    body: '{"name": "new name8265", "url": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r",
+    body: '{"name": "new name 12345", "url": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r",
       "identifiers": [{"agency": "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}],
       "coordinates": [33.29045, 0.02388], "id": "dd588a8f-6e5a-4963-9663-84b632db52e9",
       "updatedAt": "2013-02-08T13:01:23.889+0000", "active": true, "properties": {"hierarchy":
@@ -10,7 +10,7 @@
       "id": "fgJNYG1Ps13", "name": "Sub-County", "level": 4}, {"url": "http://dhis/api/organisationUnitLevels/G5kUCanhxGU",
       "id": "G5kUCanhxGU", "name": "Health Unit", "level": 5}], "level": 1}, "createdAt":
       "2012-08-14T09:59:50.324+0000"}'
-    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '980',
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '982',
       Content-Type: application/json; charset="UTF-8", Etag: Rajini, Host: !!python/unicode 'dhis',
       User-Agent: Python-urllib/2.7}
     method: PUT
@@ -18,6 +18,6 @@
   response:
     body: {string: '{"message":"ETag provided does not match current ETag of facility"}'}
     headers: {connection: close, content-length: '67', content-type: application/json;charset=UTF-8,
-      date: 'Fri, 08 Feb 2013 13:23:57 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=653DD699B03FCC1A3A60AA4166058C0B;
+      date: 'Fri, 08 Feb 2013 13:25:31 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=7052B5FB0FD19020FF9CAC95E31CC162;
         Path=/; HttpOnly}
     status: {code: 412, message: Precondition Failed}
