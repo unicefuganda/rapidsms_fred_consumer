@@ -136,12 +136,15 @@ class TestFredFacilitiesFetcher(TestCase):
         facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
 
-        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
+            response = self.fetcher.get("/facilities/" + URLS['test_facility_id'] + ".json")
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
+            self.fetcher.get = MagicMock(return_value = response)
             fred_consumer.tasks.send_facility_update(facility)
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
             updated_facility = self.fetcher.get_facility(URLS['test_facility_id'])
-            print "******"
-            print updated_facility['name']
-            print facility.name
             self.assertEqual(updated_facility['name'], facility.name)
 
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.update_facilities_in_provider')
