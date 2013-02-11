@@ -3,7 +3,7 @@ import urllib
 import urllib2
 import json
 import base64
-from fred_consumer.models import HealthFacilityIdMap, JobStatus
+from fred_consumer.models import HealthFacilityIdMap, JobStatus, FredConfig, Failure
 from django.core.exceptions import ObjectDoesNotExist
 
 JSON_EXTENSION = ".json"
@@ -82,3 +82,19 @@ class FredFacilitiesFetcher(object):
         if etag:
             headers["ETag"] = etag
         self.write(facility_url, facility, "PUT", headers)
+
+
+    @staticmethod
+    def send_facility_update(health_facility):
+        try:
+            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            facility = {'name': health_facility.name}
+            fetcher.update_facilities_in_provider(health_facility.uuid, facility)
+            return True
+        except Exception, e:
+            exception = type(e).__name__ +":"+ str(e)
+            print "Exception is:"
+            print exception
+            facility['uuid'] = health_facility.uuid
+            Failure.objects.create(exception=exception, json=json.dumps(facility), action = "PUT")
+            return False

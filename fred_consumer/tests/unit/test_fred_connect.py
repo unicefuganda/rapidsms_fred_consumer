@@ -166,7 +166,7 @@ class TestFredFacilitiesFetcher(TestCase):
         facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         mock_update_facilities_in_provider.side_effect = Exception('HTTP ERROR')
-        fred_consumer.tasks.send_facility_update(facility)
+        FredFacilitiesFetcher.send_facility_update(facility)
         assert mock_update_facilities_in_provider.called
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
@@ -178,7 +178,7 @@ class TestFredFacilitiesFetcher(TestCase):
     def test_send_facility_update_facility_doesnt_exist_failure(self):
         assert len(Failure.objects.all()) == 0
         facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
-        fred_consumer.tasks.send_facility_update(facility)
+        FredFacilitiesFetcher.send_facility_update(facility)
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
         assert failure.exception == "DoesNotExist:HealthFacilityIdMap matching query does not exist."
