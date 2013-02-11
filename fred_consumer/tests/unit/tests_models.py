@@ -106,6 +106,6 @@ class TestFailures(TestCase):
   def test_storage(self):
     exception = Exception('Failed for whatever reasons')
     failed_json = json.dumps({'name': 'BATMAN'})
-    failure = Failure.objects.create(exception=exception, json=failed_json)
+    failure = Failure.objects.create(exception=exception, json=failed_json, action = "PUT")
     self.failUnless(failure.id)
     assert failure.time != None
