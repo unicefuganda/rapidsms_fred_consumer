@@ -105,7 +105,8 @@ class TestFredFacilitiesFetcher(TestCase):
       assert mocked_sync.called
 
     def test_send_facility_update_without_etag(self):
-        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        facility = HealthFacility(name = "new name", uuid= URLS['test_facility_id'])
+        facility.save(cascade_update=False)
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
@@ -123,7 +124,8 @@ class TestFredFacilitiesFetcher(TestCase):
             self.assertEqual(updated_facility['name'], facility.name)
 
     def test_send_facility_update_with_etag(self):
-        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        facility = HealthFacility(name = "new name", uuid= URLS['test_facility_id'])
+        facility.save(cascade_update=False)
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
@@ -140,7 +142,8 @@ class TestFredFacilitiesFetcher(TestCase):
             self.assertEqual(updated_facility['name'], facility.name)
 
     def test_send_facility_update_failure_with_etag(self):
-        facility = HealthFacility.objects.create(name = "new name 12345", uuid= URLS['test_facility_id'])
+        facility = HealthFacility(name = "new name 12345", uuid= URLS['test_facility_id'])
+        facility.save(cascade_update=False)
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
