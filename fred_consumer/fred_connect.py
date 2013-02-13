@@ -93,8 +93,6 @@ class FredFacilitiesFetcher(object):
             return True
         except Exception, e:
             exception = type(e).__name__ +":"+ str(e)
-            print "Exception is:"
-            print exception
             facility['uuid'] = health_facility.uuid
             Failure.objects.create(exception=exception, json=json.dumps(facility), action = "PUT")
             return False

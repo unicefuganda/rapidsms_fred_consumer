@@ -178,7 +178,8 @@ class TestFredFacilitiesFetcher(TestCase):
 
     def test_send_facility_update_facility_doesnt_exist_failure(self):
         assert len(Failure.objects.all()) == 0
-        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        facility = HealthFacility(name = "new name", uuid= URLS['test_facility_id'])
+        facility.save(cascade_update=False)
         FredFacilitiesFetcher.send_facility_update(facility)
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]

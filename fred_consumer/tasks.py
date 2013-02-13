@@ -38,7 +38,7 @@ def process_facility(facility):
       existing_facility = existing_facility[0]
       existing_facility.name = name.strip()
       with reversion.create_revision():
-        existing_facility.save()
+        existing_facility.save(cascade_update=False)
         reversion.set_user(API_USER)
         reversion.set_comment(UPDATE_COMMENT)
   except Exception, e:
