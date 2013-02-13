@@ -5,9 +5,9 @@ import random
 import string
 
 credentials = {
-  'username':"admin",
-  'password':"district",
-  'url'     :"http://localhost:8080/dhis2/api-fred/v1/facilities.json"}
+  'username':"api",
+  'password':"P@ssw0rd",
+  'url'     :"http://dhis/api-fred/v1/facilities.json"}
 connector = FredFacilitiesFetcher(credentials)
 
 def new_name():
