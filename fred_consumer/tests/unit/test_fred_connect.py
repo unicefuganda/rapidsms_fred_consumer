@@ -76,7 +76,8 @@ class TestFredFacilitiesFetcher(TestCase):
 
       HealthFacilityType.objects.create(name="hcii")
 
-      facility = HealthFacilityBase.objects.create(uuid=uuid, name="BATMAN")
+      facility = HealthFacilityBase(uuid=uuid, name="BATMAN")
+      facility.save(cascade_update=False)
       self.failUnless(facility.id)
 
       assert len(HealthFacilityIdMap.objects.filter(uuid=uuid)) == 0
