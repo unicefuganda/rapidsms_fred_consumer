@@ -10,10 +10,12 @@ credentials = {
   'url'     :"http://localhost:8080/dhis2/api-fred/v1/facilities.json"}
 connector = FredFacilitiesFetcher(credentials)
 
+def new_name():
+  return ''.join(random.choice(string.letters) for i in xrange(15))
+
 @step(u'Given I have created a facility')
 def given_i_have_created_a_facility(step):
-  seed = ''.join(random.choice(string.letters) for i in xrange(15))
-  world.name = "Facility " + seed
+  world.name = "Facility " + new_name() 
   connector.write(credentials['url'], {
     'name'       : world.name, 
     'active'     : True,
@@ -28,6 +30,14 @@ def then_it_should_appear_at_the_top_of_the_feed (step):
 
 @step(u'Then I should be able to read it')
 def then_i_should_be_able_to_read_it (step):
+    facility = connector.get_json(".json", world.facility['url'])
+    assert world.facility['name'] == facility['name']
+
+@step(u'And I should be able to update it')
+def and_i_should_be_able_to_update_it (step):
+    name = new_name()
+    world.facility['name'] = name
+    connector.write(world.facility['url'], world.facility, "PUT")
     facility = connector.get_json(".json", world.facility['url'])
     assert world.facility['name'] == facility['name']
 
