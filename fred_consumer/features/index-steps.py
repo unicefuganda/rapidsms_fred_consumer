@@ -121,7 +121,7 @@ def given_i_process_a_facility(step):
   facility_json['name'] = "Apo" + str(randint(1,9999))
   facility = HealthFacilityBase.objects.get(id=2919)
   facility.uuid = facility_json['id']
-  facility.save()
+  facility.save(cascade_update=False)
   reversion.get_for_object(facility).delete()
 
   facility = HealthFacilityBase.objects.get(id=2919)
