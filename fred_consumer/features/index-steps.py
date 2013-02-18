@@ -37,7 +37,7 @@ def access_landing_page(step):
 
 @step(u'Then I should see all the fields')
 def validate_landing_page_fields(step):
-  assert world.browser.is_text_present("FRED Settings")
+  assert world.browser.is_text_present("FRED Settings", wait_time=3)
   assert world.browser.is_text_present("Failures")
   assert world.browser.is_text_present("Provider URL")
   assert world.browser.is_text_present("Username")
@@ -157,6 +157,7 @@ def then_i_should_see_failures_paginated(step):
   world.browser.is_text_present("Exception")
   world.browser.is_text_present("JSON Body")
   world.browser.is_text_present("<Page 1 of 2>")
+  world.browser.is_element_present_by_css("a[class=next]", wait_time=3)
   world.browser.find_by_css("a[class=next]").first.click()
   world.browser.is_text_present("Time")
   world.browser.is_text_present("Exception")
