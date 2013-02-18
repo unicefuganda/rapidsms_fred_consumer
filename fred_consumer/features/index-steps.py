@@ -103,7 +103,7 @@ def then_i_should_see_pending_current_job_with_timestamp(step):
   from datetime import datetime
   now = datetime.now()
   timestamp = now.strftime("%b. ") + now.strftime("%d, %Y, ").strip("0") + now.strftime("%I:%M").strip("0")
-  assert world.browser.is_text_present(timestamp)
+  assert world.browser.is_text_present(timestamp, wait_time=3)
 
 @step(u'I terminate the job')
 def terminate_job(step):
