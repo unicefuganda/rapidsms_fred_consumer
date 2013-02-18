@@ -94,6 +94,7 @@ def flush_job_status(step):
 
 @step(u'And I start a job')
 def run_job(step):
+  assert world.browser.is_text_present("Sync Now", wait_time=3)
   world.browser.click_link_by_text('Sync Now')
   assert world.browser.is_text_present("Sync has been scheduled! Refresh in few seconds.")
   visit("/fredconsumer/")
