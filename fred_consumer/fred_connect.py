@@ -79,8 +79,8 @@ class FredFacilitiesFetcher(object):
         facility = dict(facility_in_fred.items() + facility.items())
         headers = {}
         etag = response.info().getheader('ETag')
-        if etag:
-            headers["ETag"] = etag
+        # if etag:
+        #     headers["ETag"] = etag
         self.write(facility_url, facility, "PUT", headers)
 
 
