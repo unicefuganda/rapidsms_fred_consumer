@@ -1,0 +1,13 @@
+- request:
+    body: '{"active": true, "name": "", "coordinates": [0, 0]}'
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '51',
+      Content-Type: application/json; charset="UTF-8", Host: !!python/unicode 'dhis',
+      User-Agent: Python-urllib/2.7}
+    method: POST
+    url: !!python/unicode '/api-fred/v1/facilities.json'
+  response:
+    body: {string: '{"name":"length must be between 2 and 160"}'}
+    headers: {connection: close, content-length: '43', content-type: application/json;charset=UTF-8,
+      date: 'Tue, 19 Feb 2013 13:47:48 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=B2DA7C998AECC2F49B49088F57EF40C1;
+        Path=/; HttpOnly}
+    status: {code: 422, message: Unprocessable Entity}

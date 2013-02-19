@@ -107,12 +107,18 @@ class FredFacilitiesFetcher(object):
 
     @staticmethod
     def create_facility(health_facility):
-        fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
-        facility = {'name': health_facility.name,
-                    'active': True,
-                    'coordinates': [0,0]
-                    }
-        return fetcher.create_facility_in_provider(facility)
+        try:
+            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            facility = {'name': health_facility.name,
+                        'active': True,
+                        'coordinates': [0,0]
+                        }
+            return fetcher.create_facility_in_provider(facility)
+        except Exception, e:
+            exception = type(e).__name__ +":"+ str(e)
+            Failure.objects.create(exception=exception, json=json.dumps(facility), action = "POST")
+            return False
+
 
 
 

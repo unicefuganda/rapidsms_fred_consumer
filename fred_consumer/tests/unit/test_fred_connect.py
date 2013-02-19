@@ -213,6 +213,23 @@ class TestFredFacilitiesFetcher(TestCase):
         facility_in_fred = HealthFacilityIdMap.objects.get(uuid = str(facility.uuid))
         self.failUnless(facility_in_fred.url)
 
+    def test_create_facility_failure(self):
+        facility = HealthFacility()
+
+        assert len(Failure.objects.all()) == 0
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-post.yaml"):
+            self.failUnlessRaises(ValidationError, facility.save)
+
+        assert len(Failure.objects.all()) == 1
+        failure = Failure.objects.all()[0]
+        assert failure.exception == "HTTPError:HTTP Error 422: Unprocessable Entity"
+        assert failure.action == "POST"
+        assert failure.json == '{"active": true, "name": "", "coordinates": [0, 0]}'
+
+
+
+
+
 
 
 
