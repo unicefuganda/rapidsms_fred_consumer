@@ -83,6 +83,14 @@ class FredFacilitiesFetcher(object):
         #     headers["ETag"] = etag
         self.write(facility_url, facility, "PUT", headers)
 
+    def create_facility_in_provider(self, facility):
+        response = self.write(self.BASE_URL+ "/facilities", facility)
+        facility_url = response.info().getheader('Location')
+        response = self.get(url = facility_url, extension=JSON_EXTENSION)
+        facility_in_fred = json.loads(response.read())
+        facility_id = facility_in_fred['id']
+        HealthFacilityIdMap.store(facility_id, facility_url)
+        return facility_id
 
     @staticmethod
     def send_facility_update(health_facility):
@@ -96,3 +104,15 @@ class FredFacilitiesFetcher(object):
             facility['uuid'] = health_facility.uuid
             Failure.objects.create(exception=exception, json=json.dumps(facility), action = "PUT")
             return False
+
+    @staticmethod
+    def create_facility(health_facility):
+        fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+        facility = {'name': health_facility.name,
+                    'active': True,
+                    'coordinates': [0,0]
+                    }
+        return fetcher.create_facility_in_provider(facility)
+
+
+

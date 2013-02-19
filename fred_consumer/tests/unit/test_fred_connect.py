@@ -167,7 +167,9 @@ class TestFredFacilitiesFetcher(TestCase):
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.update_facilities_in_provider')
     def test_send_facility_update_http_failure(self, mock_update_facilities_in_provider):
         assert len(Failure.objects.all()) == 0
-        facility = HealthFacility.objects.create(name = "new name", uuid= URLS['test_facility_id'])
+        facility = HealthFacility(name = "initial name", uuid= URLS['test_facility_id'])
+        facility.save(cascade_update=False)
+        facility.name = "new name"
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         mock_update_facilities_in_provider.side_effect = Exception('HTTP ERROR')
         FredFacilitiesFetcher.send_facility_update(facility)
@@ -190,6 +192,28 @@ class TestFredFacilitiesFetcher(TestCase):
         facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'] }
         assert failure.json == json.dumps(facility_json)
         assert failure.action == "PUT"
+
+    def test_create_facility(self):
+        facility = HealthFacility(name = "new name")
+        facility_json = {'name': facility.name,
+                         'active': True,
+                         'coordinates': [0,0]
+        }
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-post.yaml"):
+            write_response = self.fetcher.write(self.fetcher.BASE_URL+ "/facilities", facility_json)
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
+            temp_write = FredFacilitiesFetcher.write
+            FredFacilitiesFetcher.write = MagicMock(return_value = write_response)
+            facility.save()
+            FredFacilitiesFetcher.write = temp_write
+
+        self.failUnless(facility.id)
+        self.failUnless(facility.uuid)
+        facility_in_fred = HealthFacilityIdMap.objects.get(uuid = str(facility.uuid))
+        self.failUnless(facility_in_fred.url)
+
+
 
 
 
