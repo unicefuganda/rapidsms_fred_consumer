@@ -222,7 +222,7 @@ class TestFredFacilitiesFetcher(TestCase):
 
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
-        assert failure.exception == "HTTPError:HTTP Error 422: Unprocessable Entity"
+        assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}'
         assert failure.action == "POST"
         assert failure.json == '{"active": true, "name": "", "coordinates": [0, 0]}'
 

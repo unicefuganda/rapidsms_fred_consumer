@@ -114,8 +114,8 @@ class FredFacilitiesFetcher(object):
                         'coordinates': [0,0]
                         }
             return fetcher.create_facility_in_provider(facility)
-        except Exception, e:
-            exception = type(e).__name__ +":"+ str(e)
+        except urllib2.HTTPError, e:
+            exception = type(e).__name__ +":"+ str(e.read())
             Failure.objects.create(exception=exception, json=json.dumps(facility), action = "POST")
             return False
 
