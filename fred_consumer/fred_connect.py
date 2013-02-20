@@ -13,6 +13,7 @@ class FredFacilitiesFetcher(object):
     def __init__(self,connection_setting):
         auth = base64.b64encode("%(username)s:%(password)s" % connection_setting)
         self.BASE_URL = connection_setting['url'].strip("/")
+        self.FACILITY_URL_PREFIX = self.BASE_URL + "/facilities"
         self.HEADERS = {
             'Content-type': 'application/json; charset="UTF-8"',
             'Authorization': 'Basic '+auth
@@ -26,9 +27,11 @@ class FredFacilitiesFetcher(object):
         response = urllib2.urlopen(request)
         return response
 
-    def get_json(self, extension, url = None, query = None):
+    def get_json(self, extension, url = None, query = None, etag = False):
         response = self.get(extension, url, query)
-        return json.loads(response.read())
+        facility_json = json.loads(response.read())
+        etag_header = response.info().getheader('ETag')
+        return [facility_json, etag_header] if etag else facility_json
 
     def write(self, facility_url, facility_data, action="POST", headers={}):
         headers.update(self.HEADERS)
@@ -38,20 +41,18 @@ class FredFacilitiesFetcher(object):
         return response
 
     def get_all_facilities(self):
-        extension = "/facilities" + JSON_EXTENSION
-        return self.get_json(extension=extension)
+        return self.get_json(url = self.FACILITY_URL_PREFIX, extension = JSON_EXTENSION)
 
-    def get_facility(self, facility_id):
+    def get_facility(self, facility_id, etag = False):
         url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
-        return self.get_json(url = url, extension= JSON_EXTENSION)
+        return self.get_json(url = url, extension= JSON_EXTENSION, etag = etag)
 
     def get_filtered_facilities(self, filters):
         query = []
         for key, value in filters.items():
             query.append(key + "=" + value)
         query = "&".join(query)
-        extension = "/facilities.json"
-        return self.get_json(query=query, extension=extension)
+        return self.get_json(url = self.FACILITY_URL_PREFIX, query = query, extension = JSON_EXTENSION)
 
     def fetch_facilities(self):
       try:
@@ -73,21 +74,18 @@ class FredFacilitiesFetcher(object):
             status.succeeded(False)
 
     def update_facilities_in_provider(self, facility_id, facility):
-        facility_url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
-        response = self.get(url = facility_url, extension=JSON_EXTENSION)
-        facility_in_fred = json.loads(response.read())
+        facility_in_fred, etag = self.get_facility(facility_id, etag = True)
         facility = dict(facility_in_fred.items() + facility.items())
+        facility_url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
         headers = {}
-        etag = response.info().getheader('ETag')
         # if etag:
         #     headers["ETag"] = etag
         self.write(facility_url, facility, "PUT", headers)
 
     def create_facility_in_provider(self, facility):
-        response = self.write(self.BASE_URL+ "/facilities", facility)
+        response = self.write(self.FACILITY_URL_PREFIX, facility)
         facility_url = response.info().getheader('Location')
-        response = self.get(url = facility_url, extension=JSON_EXTENSION)
-        facility_in_fred = json.loads(response.read())
+        facility_in_fred = self.get_json(url = facility_url, extension= JSON_EXTENSION)
         facility_id = facility_in_fred['id']
         HealthFacilityIdMap.store(facility_id, facility_url)
         return facility_id
