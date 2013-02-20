@@ -36,6 +36,7 @@ class TestFredFacilitiesFetcher(TestCase):
             self.assertIsNotNone(obj)
 
     def test_get_facility(self):
+        HealthFacilityIdMap.objects.create(uuid = URLS['test_facility_id'], url= URLS['test_facility_url'])
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             obj = self.fetcher.get_facility(URLS['test_facility_id'])
             self.assertIsNotNone(obj)
