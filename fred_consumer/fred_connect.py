@@ -78,8 +78,8 @@ class FredFacilitiesFetcher(object):
         facility = dict(facility_in_fred.items() + facility.items())
         facility_url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
         headers = {}
-        # if etag:
-        #     headers["ETag"] = etag
+        if etag:
+            headers["ETag"] = etag
         self.write(facility_url, facility, "PUT", headers)
 
     def create_facility_in_provider(self, facility):

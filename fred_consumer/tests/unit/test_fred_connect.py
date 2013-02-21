@@ -142,28 +142,28 @@ class TestFredFacilitiesFetcher(TestCase):
             updated_facility = fetcher.get_facility(URLS['test_facility_id'])
             self.assertEqual(updated_facility['name'], facility.name)
 
-    # def test_send_facility_update_failure_with_etag(self):
-    #     facility = HealthFacility(name = "new name 12345", uuid= URLS['test_facility_id'])
-    #     facility.save(cascade_update=False)
-    #     HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
-    #     facility_json = { 'name': facility.name }
-    #
-    #     with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
-    #         response = self.fetcher.get("/facilities/" + facility.uuid + ".json")
-    #         response.info().getheader = MagicMock(return_value = "Rajini")
-    #
-    #     with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
-    #         self.fetcher.get = MagicMock(return_value = response)
-    #         try:
-    #             self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
-    #             assert True == False, "Call Succeeded"
-    #         except Exception, e:
-    #             assert str(e) == "HTTP Error 412: Precondition Failed"
-    #
-    #     with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
-    #         fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
-    #         updated_facility = fetcher.get_facility(URLS['test_facility_id'])
-    #         assert updated_facility['name'] != facility.name
+    def test_send_facility_update_failure_with_etag(self):
+        facility = HealthFacility(name = "new name 12345", uuid= URLS['test_facility_id'])
+        facility.save(cascade_update=False)
+        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        facility_json = { 'name': facility.name }
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
+            response = self.fetcher.get("/facilities/" + facility.uuid + ".json")
+            response.info().getheader = MagicMock(return_value = "Rajini")
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
+            self.fetcher.get = MagicMock(return_value = response)
+            try:
+                self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
+                assert True == False, "Call Succeeded"
+            except Exception, e:
+                assert str(e) == "HTTP Error 412: Precondition Failed"
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
+            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            updated_facility = fetcher.get_facility(URLS['test_facility_id'])
+            assert updated_facility['name'] != facility.name
 
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.update_facilities_in_provider')
     def test_send_facility_update_http_failure(self, mock_update_facilities_in_provider):
