@@ -130,11 +130,7 @@ class TestFredFacilitiesFetcher(TestCase):
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
-        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
-            response = self.fetcher.get("/facilities/" + URLS['test_facility_id'] + ".json")
-
-        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
-            self.fetcher.get = MagicMock(return_value = response)
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
@@ -200,14 +196,8 @@ class TestFredFacilitiesFetcher(TestCase):
                          'active': True,
                          'coordinates': [0,0]
         }
-        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-post.yaml"):
-            write_response = self.fetcher.write(self.fetcher.BASE_URL+ "/facilities", facility_json)
-
-        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
-            temp_write = FredFacilitiesFetcher.write
-            FredFacilitiesFetcher.write = MagicMock(return_value = write_response)
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             facility.save()
-            FredFacilitiesFetcher.write = temp_write
 
         self.failUnless(facility.id)
         self.failUnless(facility.uuid)
