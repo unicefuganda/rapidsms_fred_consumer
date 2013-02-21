@@ -3,7 +3,8 @@ import urllib
 import urllib2
 import json
 import base64
-from fred_consumer.models import HealthFacilityIdMap, JobStatus, FredConfig, Failure
+from fred_consumer.models import HealthFacilityIdMap, JobStatus, FredConfig
+from fred_consumer.decorators import *
 from django.core.exceptions import ObjectDoesNotExist
 
 JSON_EXTENSION = ".json"
@@ -19,13 +20,16 @@ class FredFacilitiesFetcher(object):
             'Authorization': 'Basic '+auth
         }
 
+    @capture_urllib_exception
+    def send(self, request):
+        return urllib2.urlopen(request)
+
     def get(self, extension, url = None, query = None):
         url = (url or self.BASE_URL) + extension
         if query:
             url += "?" + query
         request = urllib2.Request(url, headers=self.HEADERS)
-        response = urllib2.urlopen(request)
-        return response
+        return self.send(request)
 
     def get_json(self, extension, url = None, query = None, etag = False):
         response = self.get(extension, url, query)
@@ -37,8 +41,7 @@ class FredFacilitiesFetcher(object):
         headers.update(self.HEADERS)
         request = urllib2.Request(facility_url + JSON_EXTENSION, data = json.dumps(facility_data), headers = headers)
         request.get_method = lambda: action
-        response = urllib2.urlopen(request)
-        return response
+        return self.send(request)
 
     def get_all_facilities(self):
         return self.get_json(url = self.FACILITY_URL_PREFIX, extension = JSON_EXTENSION)
@@ -73,6 +76,7 @@ class FredFacilitiesFetcher(object):
         except Exception:
             status.succeeded(False)
 
+    @capture_generic_exception
     def update_facilities_in_provider(self, facility_id, facility):
         facility_in_fred, etag = self.get_facility(facility_id, etag = True)
         facility = dict(facility_in_fred.items() + facility.items())
@@ -81,7 +85,9 @@ class FredFacilitiesFetcher(object):
         if etag:
             headers["ETag"] = etag
         self.write(facility_url, facility, "PUT", headers)
+        return True
 
+    @capture_generic_exception
     def create_facility_in_provider(self, facility):
         response = self.write(self.FACILITY_URL_PREFIX, facility)
         facility_url = response.info().getheader('Location')
@@ -95,12 +101,8 @@ class FredFacilitiesFetcher(object):
         try:
             fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
             facility = {'name': health_facility.name}
-            fetcher.update_facilities_in_provider(health_facility.uuid, facility)
-            return True
+            return fetcher.update_facilities_in_provider(health_facility.uuid, facility)
         except Exception, e:
-            exception = type(e).__name__ +":"+ str(e)
-            facility['uuid'] = health_facility.uuid
-            Failure.objects.create(exception=exception, json=json.dumps(facility), action = "PUT")
             return False
 
     @staticmethod
@@ -112,11 +114,5 @@ class FredFacilitiesFetcher(object):
                         'coordinates': [0,0]
                         }
             return fetcher.create_facility_in_provider(facility)
-        except urllib2.HTTPError, e:
-            exception = type(e).__name__ +":"+ str(e.read())
-            Failure.objects.create(exception=exception, json=json.dumps(facility), action = "POST")
+        except Exception, e:
             return False
-
-
-
-

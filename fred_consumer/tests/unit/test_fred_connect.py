@@ -161,21 +161,22 @@ class TestFredFacilitiesFetcher(TestCase):
             updated_facility = fetcher.get_facility(URLS['test_facility_id'])
             assert updated_facility['name'] != facility.name
 
-    @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.update_facilities_in_provider')
-    def test_send_facility_update_http_failure(self, mock_update_facilities_in_provider):
+    def test_send_facility_update_http_failure(self):
         assert len(Failure.objects.all()) == 0
         facility = HealthFacility(name = "initial name", uuid= URLS['test_facility_id'])
         facility.save(cascade_update=False)
-        facility.name = "new name"
+        facility.name = ""
         HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
-        mock_update_facilities_in_provider.side_effect = Exception('HTTP ERROR')
-        FredFacilitiesFetcher.send_facility_update(facility)
-        assert mock_update_facilities_in_provider.called
+
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            assert FredFacilitiesFetcher.send_facility_update(facility) == False
+
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
-        assert failure.exception == "Exception:HTTP ERROR"
+        assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}:http://dhis/api-fred/v1///facilities/nBDPw7Qhd7r.json'
         facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'] }
-        assert failure.json == json.dumps(facility_json)
+
+        assert failure.json == '{"name": "", "url": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r", "identifiers": [{"agency": "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}], "coordinates": [33.29045, 0.02388], "id": "94173f3a-1892-4640-b60c-bac8fedce26f", "updatedAt": "2013-02-21T12:15:47.801+0000", "active": true, "properties": {"hierarchy": [{"url": "http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM", "id": "OwhPJYQ9gqM", "name": "MOH-Uganda", "level": 1}, {"url": "http://dhis/api/organisationUnitLevels/V9O2FgyImDt", "id": "V9O2FgyImDt", "name": "Region", "level": 2}, {"url": "http://dhis/api/organisationUnitLevels/a1XiGwfbe81", "id": "a1XiGwfbe81", "name": "District", "level": 3}, {"url": "http://dhis/api/organisationUnitLevels/fgJNYG1Ps13", "id": "fgJNYG1Ps13", "name": "Sub-County", "level": 4}, {"url": "http://dhis/api/organisationUnitLevels/G5kUCanhxGU", "id": "G5kUCanhxGU", "name": "Health Unit", "level": 5}], "level": 1}, "createdAt": "2012-08-14T09:59:50.324+0000"}'
         assert failure.action == "PUT"
 
     def test_send_facility_update_facility_doesnt_exist_failure(self):
@@ -188,7 +189,7 @@ class TestFredFacilitiesFetcher(TestCase):
         assert failure.exception == "DoesNotExist:HealthFacilityIdMap matching query does not exist."
         facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'] }
         assert failure.json == json.dumps(facility_json)
-        assert failure.action == "PUT"
+        assert failure.action == "GENERIC"
 
     def test_create_facility(self):
         facility = HealthFacility(name = "new name")
@@ -213,6 +214,6 @@ class TestFredFacilitiesFetcher(TestCase):
 
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
-        assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}'
+        assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}:http://dhis/api-fred/v1/facilities.json'
         assert failure.action == "POST"
         assert failure.json == '{"active": true, "name": "", "coordinates": [0, 0]}'
