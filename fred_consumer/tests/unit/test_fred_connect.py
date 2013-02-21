@@ -226,12 +226,3 @@ class TestFredFacilitiesFetcher(TestCase):
         assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}'
         assert failure.action == "POST"
         assert failure.json == '{"active": true, "name": "", "coordinates": [0, 0]}'
-
-
-
-
-
-
-
-
-
