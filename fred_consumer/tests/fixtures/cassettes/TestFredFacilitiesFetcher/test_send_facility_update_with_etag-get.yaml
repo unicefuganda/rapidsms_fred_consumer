@@ -5,11 +5,11 @@
     method: GET
     url: !!python/unicode '/api-fred/v1/facilities/nBDPw7Qhd7r.json'
   response:
-    body: {string: '{"id":"dd588a8f-6e5a-4963-9663-84b632db52e9","name":"new name","active":true,"url":"http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r","createdAt":"2012-08-14T09:59:50.324+0000","updatedAt":"2013-02-08T12:43:56.472+0000","coordinates":[33.29045,0.02388],"identifiers":[{"id":"nBDPw7Qhd7r","context":"DHIS2_UID","agency":"DHIS2"}],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+    body: {string: '{"id":"94173f3a-1892-4640-b60c-bac8fedce26f","name":"new name","active":true,"url":"http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r","createdAt":"2012-08-14T09:59:50.324+0000","updatedAt":"2013-02-21T08:24:29.657+0000","coordinates":[33.29045,0.02388],"identifiers":[{"id":"nBDPw7Qhd7r","context":"DHIS2_UID","agency":"DHIS2"}],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
         Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}'}
     headers: {cache-control: 'no-cache, no-store, max-age=0', connection: close, content-language: en-US,
-      content-length: '911', content-type: application/json;charset=UTF-8, date: 'Fri,
-        08 Feb 2013 12:44:35 GMT', etag: '"0fd390bed1ee6c071f274f420f1310515"', expires: 'Thu,
-        01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=F3BC0C8DC08C89828D2E72F8F1D3688C;
+      content-length: '911', content-type: application/json;charset=UTF-8, date: 'Thu,
+        21 Feb 2013 08:44:59 GMT', etag: '"0984e1c9a975e460d802ebbfe1beeef64"', expires: 'Thu,
+        01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=D387D3C4DE170544C37C52C0AE266E1F;
         Path=/; HttpOnly}
     status: {code: 200, message: OK}
