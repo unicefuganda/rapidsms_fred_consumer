@@ -26,3 +26,11 @@ def capture_generic_exception(fn):
             Failure.objects.create(exception=exception, json=json.dumps(facility), action = "GENERIC")
             raise e
     return wrapped
+
+def return_in_boolean(fn):
+    def wrapped(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except Exception, e:
+            return False
+    return wrapped
