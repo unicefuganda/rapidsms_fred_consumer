@@ -91,6 +91,23 @@ class TestFredFacilitiesFetcher(TestCase):
       self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
       assert facility.name == "BATMAN HC II"
 
+    def test_process_facility_create(self):
+        facility_json = json.loads('{"facilities":[{"id":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"url":"http://dhis/api-fred/v1/facilities/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}]}')['facilities'][0]
+
+        uuid = facility_json['id']
+        HealthFacilityType.objects.filter(name="hcii").delete()
+        HealthFacilityBase.objects.filter(uuid=uuid).delete()
+
+        assert len(HealthFacilityIdMap.objects.filter(uuid=uuid)) == 0
+        assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 0
+
+        fred_consumer.tasks.process_facility(facility_json)
+
+        facility = HealthFacilityBase.objects.filter(uuid=uuid)[0]
+        self.failUnless(facility)
+        self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
+        assert facility.name == "BATMAN HC II"
+
     def test_process_facility_failures(self):
       facility = {'name': 'name'}
       assert len(Failure.objects.all()) == 0

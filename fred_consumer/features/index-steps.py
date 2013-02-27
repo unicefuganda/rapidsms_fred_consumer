@@ -132,6 +132,37 @@ def given_i_process_a_facility(step):
   facility = HealthFacilityBase.objects.get(id=2919)
   assert facility.name == facility_json['name']
 
+@step(u'Given I process a new facility')
+def given_i_process_a_new_facility(step):
+    facility_json = json.loads('{"facilities":[{"id":"6VeE8JrylXy","name":"Apo","active":true,"url":"http://dhis/api-fred/v1/facilities/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}]}')['facilities'][0]
+    uuid = facility_json['id']
+    facility_json['name'] = "Apo" + str(randint(1,9999))
+
+    HealthFacilityIdMap.objects.filter(uuid=uuid).delete()
+    HealthFacilityBase.objects.filter(uuid=uuid).delete()
+
+    assert len(HealthFacilityIdMap.objects.filter(uuid=uuid)) == 0
+    assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 0
+
+    process_facility(facility_json)
+
+    facility = HealthFacilityBase.objects.filter(uuid=uuid)[0]
+    id_map = HealthFacilityIdMap.objects.filter(uuid=uuid)[0]
+
+    assert id_map.url == facility_json['url']
+    assert facility.name == facility_json['name']
+
+@step(u'And I should see new reversion logs for the latest facility')
+def and_i_should_see_reversion_logs_for_new_record(step):
+  facility = HealthFacilityBase.objects.filter(uuid='6VeE8JrylXy')
+  facility = facility[0]
+  version_list = reversion.get_for_object(facility)
+  assert len(version_list) == 1
+  version = version_list[0]
+  assert version.revision.comment == UPDATE_COMMENT
+  assert version.revision.user == API_USER
+
+
 @step(u'And I should see reversion logs')
 def and_i_should_see_reversion_logs(step):
   facility = HealthFacilityBase.objects.get(id=2919)

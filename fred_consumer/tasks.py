@@ -3,7 +3,9 @@ from fred_consumer.models import *
 from healthmodels.models.HealthFacility import *
 from fred_consumer.fred_connect import *
 from django.contrib.auth.models import User
-import re, reversion
+import re
+import reversion
+from django.db import transaction
 
 celery = Celery()
 FACILITY_TYPE_MAP = {
@@ -21,6 +23,10 @@ def find_facility_type(text):
   result = re.findall(rc, text)
   return FACILITY_TYPE_MAP[result[-1]]
 
+@transaction.commit_on_success
+def create_facility(uuid):
+    facility = HealthFacility(uuid=uuid)
+    facility.save(cascade_update=False)
 
 @celery.task
 def run_fred_sync():
@@ -35,10 +41,13 @@ def process_facility(facility):
     HealthFacilityIdMap.store(uuid, facility['url'])
     existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
     if existing_facility:
-      existing_facility = existing_facility[0]
-      existing_facility.name = name.strip()
-      with reversion.create_revision():
-        existing_facility.save(cascade_update=False)
+      facility = existing_facility[0]
+    else:
+      create_facility(uuid)
+      facility = HealthFacilityBase.objects.get(uuid=uuid)
+    facility.name = name.strip()
+    with reversion.create_revision():
+        facility.save(cascade_update=False)
         reversion.set_user(API_USER)
         reversion.set_comment(UPDATE_COMMENT)
   except Exception, e:

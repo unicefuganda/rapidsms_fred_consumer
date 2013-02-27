@@ -24,6 +24,10 @@ Feature: Fred Configuration page
     Given I process a facility
     And I should see reversion logs
 
+  Scenario: Processing Facility - Create
+    Given I process a new facility
+    And I should see new reversion logs for the latest facility
+
   Scenario: Failures page
     Given I have few failures from Fred sync
     And I am on the Fred failures page
