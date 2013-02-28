@@ -33,6 +33,9 @@
           <th>
             JSON Body
           </th>
+          <th>
+            HTTP Action
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -46,6 +49,9 @@
             </td>
             <td>
               {{ failure.json }}
+            </td>
+            <td>
+              {{ failure.action }}
             </td>
           </tr>
         {% endfor %}

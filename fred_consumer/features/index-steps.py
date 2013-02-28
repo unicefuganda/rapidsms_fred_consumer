@@ -185,16 +185,20 @@ def and_i_am_on_the_fred_failures_page(step):
 
 @step(u'Then I should see failures paginated')
 def then_i_should_see_failures_paginated(step):
-  world.browser.is_text_present("Time")
-  world.browser.is_text_present("Exception")
-  world.browser.is_text_present("JSON Body")
-  world.browser.is_text_present("<Page 1 of 2>")
+  assert world.browser.is_text_present("Time")
+  assert world.browser.is_text_present("Exception")
+  assert world.browser.is_text_present("JSON Body")
+  assert world.browser.is_text_present("HTTP Action")
+  assert world.browser.is_text_present("GET")
+  assert world.browser.is_text_present("<Page 1 of 2>")
   world.browser.is_element_present_by_css("a[class=next]", wait_time=3)
   world.browser.find_by_css("a[class=next]").first.click()
-  world.browser.is_text_present("Time")
-  world.browser.is_text_present("Exception")
-  world.browser.is_text_present("JSON Body")
-  world.browser.is_text_present("<Page 2 of 2>")
+  assert world.browser.is_text_present("Time")
+  assert world.browser.is_text_present("Exception")
+  assert world.browser.is_text_present("JSON Body")
+  assert world.browser.is_text_present("HTTP Action")
+  assert world.browser.is_text_present("GET")
+  assert world.browser.is_text_present("<Page 2 of 2>")
 
 def visit(url):
   world.browser.visit(django_url(url))
