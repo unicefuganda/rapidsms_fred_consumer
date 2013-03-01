@@ -98,12 +98,16 @@ def run_job(step):
   world.browser.click_link_by_text('Sync Now')
   assert world.browser.is_text_present("Sync has been scheduled! Refresh in few seconds.")
   visit("/fredconsumer/")
+  print JobStatus.objects.all()
+  print "*"*100
 
 @step(u'Then I should see pending current job with timestamp')
 def then_i_should_see_pending_current_job_with_timestamp(step):
   from datetime import datetime
   now = datetime.now()
-  timestamp = now.strftime("%b. ") + now.strftime("%d, %Y, ").strip("0") + now.strftime("%I:%M").strip("0")
+  timestamp = now.strftime("%B ") + now.strftime("%d, %Y, ").strip("0") + now.strftime("%I:%M").strip("0")
+  print timestamp
+  print "*"*100
   assert world.browser.is_text_present(timestamp, wait_time=3)
 
 @step(u'I terminate the job')
