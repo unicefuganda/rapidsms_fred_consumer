@@ -14,7 +14,7 @@ FRED_CONFIG = FredConfig.get_fred_configs()
 FIXTURES = os.path.abspath(fred_consumer.__path__[0]) + "/tests/fixtures/cassettes/"
 
 URLS = {
-    'test_facility_url'      : settings.CONNECT_TO_FRED_KEYS['url'] + 'facilities/nBDPw7Qhd7r',
+    'test_facility_url'      : FRED_CONFIG['url'] + 'facilities/nBDPw7Qhd7r',
     'test_facility_id'       : 'nBDPw7Qhd7r',
     'test_wrong_facility_id' : 'naDPw7Qhd7B'
 }
@@ -28,6 +28,12 @@ class TestFredFacilitiesFetcher(TestCase):
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             obj = self.fetcher.get_all_facilities()
             self.assertIsNotNone(obj)
+
+    def test_get_all_facilities_calls_with_limit(self):
+        self.fetcher.get_json = MagicMock(return_value={"facilities":[]})
+        obj = self.fetcher.get_all_facilities()
+
+        self.fetcher.get_json.assert_called_with(url=FRED_CONFIG['url'].strip("/") + "/facilities", query='limit=off', extension='.json')
 
     def test_get_filtered_facilities(self):
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):

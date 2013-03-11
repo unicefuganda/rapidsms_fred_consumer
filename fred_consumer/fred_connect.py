@@ -44,7 +44,7 @@ class FredFacilitiesFetcher(object):
         return self.send(request)
 
     def get_all_facilities(self):
-        return self.get_json(url = self.FACILITY_URL_PREFIX, extension = JSON_EXTENSION)
+        return self.get_json(url = self.FACILITY_URL_PREFIX, extension = JSON_EXTENSION, query = "limit=off")
 
     def get_facility(self, facility_id, etag = False):
         url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
