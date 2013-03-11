@@ -36,9 +36,9 @@ def run_fred_sync():
 @celery.task
 def process_facility(facility):
   try:
-    uuid = facility['id']
+    uuid = facility['uuid']
     name = facility['name']
-    HealthFacilityIdMap.store(uuid, facility['url'])
+    HealthFacilityIdMap.store(uuid, facility['href'])
     existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
     if existing_facility:
       facility = existing_facility[0]

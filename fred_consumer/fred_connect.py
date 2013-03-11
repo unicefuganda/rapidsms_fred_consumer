@@ -92,7 +92,7 @@ class FredFacilitiesFetcher(object):
         response = self.write(self.FACILITY_URL_PREFIX, facility)
         facility_url = response.info().getheader('Location')
         facility_in_fred = self.get_json(url = facility_url, extension= JSON_EXTENSION)
-        facility_id = facility_in_fred['id']
+        facility_id = facility_in_fred['uuid']
         HealthFacilityIdMap.store(facility_id, facility_url)
         return facility_id
 
