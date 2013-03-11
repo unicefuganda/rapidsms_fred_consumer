@@ -15,13 +15,11 @@ from fred_consumer.tasks import *
 @before.all
 def set_browser():
   world.browser = Browser()
-  FredConfig.objects.all().delete()
   JobStatus.objects.all().delete()
 
 @after.all
 def close_browser(*args):
   world.browser.quit()
-  FredConfig.objects.all().delete()
   JobStatus.objects.all().delete()
 
 @step(u'Given I am logged in')
@@ -37,56 +35,12 @@ def access_landing_page(step):
 
 @step(u'Then I should see all the fields')
 def validate_landing_page_fields(step):
-  assert world.browser.is_text_present("FRED Settings", wait_time=3)
+  assert world.browser.is_text_present("FRED Sync", wait_time=3)
   assert world.browser.is_text_present("Failures")
-  assert world.browser.is_text_present("Provider URL")
-  assert world.browser.is_text_present("Username")
-  assert world.browser.is_text_present("Password")
-
-@step(u'Given I have my fred settings added')
-def load_fred_settings(step):
-  world.fred_config = {
-    'url'     : FredConfig.objects.create(key=FredConfig.URL_KEY      , value="http://fred-provider.com/api/v1/"),
-    'username': FredConfig.objects.create(key=FredConfig.USERNAME_KEY , value="django"),
-    'password': FredConfig.objects.create(key=FredConfig.PASSWORD_KEY , value="django"),
-  }
 
 @step(u'And I am on the Fred landing page')
 def and_i_am_on_the_fred_landing_page(step):
   visit("/fredconsumer/")
-
-@step(u'Then I should see all the fields populated with values')
-def validate_landing_page_fields_populated(step):
-  assert world.browser.find_by_id('fred_url')[0].value      == world.fred_config['url'].value
-  assert world.browser.find_by_id('fred_username')[0].value == world.fred_config['username'].value
-  assert world.browser.find_by_id('fred_password')[0].value == world.fred_config['password'].value
-
-@step(u'Given I have no configurations stored')
-def flush_configurations(step):
-  FredConfig.objects.all().delete()
-
-@step(u'And I enter new configurations')
-def add_new_configration(step):
-  number = str(randint(1,9999))
-  world.fred_config = {
-    'url': "http://dhis/api-fred/v1/" + number,
-    'username': "api" + number,
-    'password': "P@ssw0rd" + number,
-  }
-  fill_config_values()
-
-@step(u'And I should see success message')
-def verify_success_message(step):
-  assert world.browser.is_text_present("Configurations updated successfully!")
-
-@step(u'And I change the configurations')
-def update_configrations(step):
-  world.fred_config = {
-    'url': "http://dhis/api-fred/v1/",
-    'username': "api",
-    'password': "P@ssw0rd",
-  }
-  fill_config_values()
 
 @step(u'Given I have no previous job')
 def flush_job_status(step):
@@ -98,16 +52,12 @@ def run_job(step):
   world.browser.click_link_by_text('Sync Now')
   assert world.browser.is_text_present("Sync has been scheduled! Refresh in few seconds.")
   visit("/fredconsumer/")
-  print JobStatus.objects.all()
-  print "*"*100
 
 @step(u'Then I should see pending current job with timestamp')
 def then_i_should_see_pending_current_job_with_timestamp(step):
   from datetime import datetime
   now = datetime.now()
   timestamp = now.strftime("%B ") + now.strftime("%d, %Y, ").strip("0") + now.strftime("%I:%M").strip("0")
-  print timestamp
-  print "*"*100
   assert world.browser.is_text_present(timestamp, wait_time=3)
 
 @step(u'I terminate the job')

@@ -15,7 +15,7 @@
     <div class="navbar-inner">
       <div class="container">
         <ul class="nav">
-          <li class="active"><a href="{% url fred_config_page %}">FRED Settings</a></li>
+          <li class="active"><a href="{% url fred_config_page %}">FRED Sync</a></li>
           <li><a href="{% url failures %}">Failures</a></li>
         </ul>
       </div>
@@ -33,34 +33,6 @@
     {% endif %}
   </div>
 
-  <div class="container well">
-    <h4>FRED API configurations</h4><br>
-    <form class="form-horizontal" method="post" action="{% url fred_update_config %}">
-      <div class="control-group">
-        <label class="control-label" for="fred_settings">Provider URL</label>
-        <div class="controls">
-          <input type="text" name="url" id="fred_url" value="{{ url }}" placeholder="Provider URL">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="fred_username">Username</label>
-        <div class="controls">
-          <input type="text" name="username" id="fred_username" value="{{ username }}" placeholder="Username">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="fred_password">Password</label>
-        <div class="controls">
-          <input type="password" name="password" id="fred_password" value="{{ password }}" placeholder="Password">
-        </div>
-      </div>
-      <div class="control-group">
-        <div class="controls">
-          <button type="submit" id="update" class="btn">Update</button>
-        </div>
-      </div>
-    </form>
-  </div>
   <br><br>
   <div class="container well">
     <h4>Job Status</h4>

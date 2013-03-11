@@ -14,11 +14,6 @@ def fred_config_page(request):
     settings['last_job'] = None
   return render(request, 'fred_consumer/index.html', settings)
 
-def fred_update_config(request):
-  FredConfig.store_fred_configs(request.POST)
-  messages.success(request, "Configurations updated successfully!")
-  return redirect(reverse('fred_config_page'))
-
 def sync_now(request):
   run_fred_sync.delay()
   messages.success(request, "Sync has been scheduled! Refresh in few seconds.")

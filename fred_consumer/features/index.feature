@@ -1,16 +1,9 @@
 Feature: Fred Configuration page
 
-  Scenario: FRED API settings
-    Given I am logged in
-    Given I have no configurations stored
-    And I am on the Fred landing page
-    Then I should see all the fields
-    And I enter new configurations
-    Then I should see all the fields populated with values
-    And I should see success message
-    And I change the configurations
-    Then I should see all the fields populated with values
-    And I should see success message
+ Scenario: FRED consumer page
+   Given I am logged in
+   And I am on the Fred landing page
+   Then I should see all the fields
 
   Scenario: Job Status
     Given I have no previous job
