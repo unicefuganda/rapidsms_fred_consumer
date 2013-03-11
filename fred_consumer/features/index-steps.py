@@ -12,6 +12,11 @@ from datetime import datetime
 import reversion, json
 from fred_consumer.tasks import *
 
+@transaction.commit_on_success
+def create_facility(f):
+    f.save(False)
+    return f
+
 @before.all
 def set_browser():
   world.browser = Browser()
@@ -19,6 +24,9 @@ def set_browser():
 
 @after.all
 def close_browser(*args):
+  facilities = HealthFacility.objects.filter(uuid = "1234").all()
+  if facilities:
+    facilities.delete()
   world.browser.quit()
   JobStatus.objects.all().delete()
 
@@ -71,25 +79,26 @@ def option_for_run_job(step):
 
 @step(u'Given I process a facility')
 def given_i_process_a_facility(step):
-  facility_json = json.loads('{"facilities":[{"id":"6VeE8JrylXn","name":"Apo","active":true,"url":"http://dhis/api-fred/v1/facilities/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}]}')['facilities'][0]
+  facility_json = json.loads('{"facilities":[{"uuid":"1234","name":"Apo","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
 
   facility_json['name'] = "Apo" + str(randint(1,9999))
-  facility = HealthFacilityBase.objects.get(id=2919)
-  facility.uuid = facility_json['id']
-  facility.save(cascade_update=False)
+  facility = HealthFacility(name="ThoughtWorks facility", uuid = "1234")
+  create_facility(facility)
   reversion.get_for_object(facility).delete()
 
-  facility = HealthFacilityBase.objects.get(id=2919)
+  facility = HealthFacilityBase.objects.get(uuid="1234")
   assert facility.name != facility_json['name']
+
   process_facility(facility_json)
 
-  facility = HealthFacilityBase.objects.get(id=2919)
+  facility = HealthFacilityBase.objects.get(uuid="1234")
   assert facility.name == facility_json['name']
 
 @step(u'Given I process a new facility')
 def given_i_process_a_new_facility(step):
-    facility_json = json.loads('{"facilities":[{"id":"6VeE8JrylXy","name":"Apo","active":true,"url":"http://dhis/api-fred/v1/facilities/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111],"properties":{"level":1,"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}]}}]}')['facilities'][0]
-    uuid = facility_json['id']
+    facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXy","name":"Apo","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+
+    uuid = facility_json['uuid']
     facility_json['name'] = "Apo" + str(randint(1,9999))
 
     HealthFacilityIdMap.objects.filter(uuid=uuid).delete()
@@ -103,7 +112,7 @@ def given_i_process_a_new_facility(step):
     facility = HealthFacilityBase.objects.filter(uuid=uuid)[0]
     id_map = HealthFacilityIdMap.objects.filter(uuid=uuid)[0]
 
-    assert id_map.url == facility_json['url']
+    assert id_map.url == facility_json['href']
     assert facility.name == facility_json['name']
 
 @step(u'And I should see new reversion logs for the latest facility')
@@ -119,7 +128,8 @@ def and_i_should_see_reversion_logs_for_new_record(step):
 
 @step(u'And I should see reversion logs')
 def and_i_should_see_reversion_logs(step):
-  facility = HealthFacilityBase.objects.get(id=2919)
+  facility = HealthFacilityBase.objects.get(uuid="1234")
+
   version_list = reversion.get_for_object(facility)
   assert len(version_list) == 1
   version = version_list[0]
