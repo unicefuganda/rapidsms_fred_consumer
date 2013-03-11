@@ -9,12 +9,12 @@ from mock import *
 from fred_consumer.tasks import *
 import json
 
+FRED_CONFIG = FredConfig.get_fred_configs()
 
-FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
 FIXTURES = os.path.abspath(fred_consumer.__path__[0]) + "/tests/fixtures/cassettes/"
 
 URLS = {
-    'test_facility_url'      : FRED_CONFIG['url'] + 'facilities/nBDPw7Qhd7r',
+    'test_facility_url'      : settings.CONNECT_TO_FRED_KEYS['url'] + 'facilities/nBDPw7Qhd7r',
     'test_facility_id'       : 'nBDPw7Qhd7r',
     'test_wrong_facility_id' : 'naDPw7Qhd7B'
 }
@@ -22,7 +22,6 @@ URLS = {
 class TestFredFacilitiesFetcher(TestCase):
 
     def setUp(self):
-        FredConfig.store_fred_configs(FRED_CONFIG)
         self.fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
 
     def test_get_all_facilities(self):
@@ -191,7 +190,6 @@ class TestFredFacilitiesFetcher(TestCase):
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
         assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}:http://dhis/api-fred/v1///facilities/nBDPw7Qhd7r.json'
-        facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'] }
 
         assert failure.json == '{"name": "", "url": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r", "identifiers": [{"agency": "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}], "coordinates": [33.29045, 0.02388], "id": "94173f3a-1892-4640-b60c-bac8fedce26f", "updatedAt": "2013-02-21T12:15:47.801+0000", "active": true, "properties": {"hierarchy": [{"url": "http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM", "id": "OwhPJYQ9gqM", "name": "MOH-Uganda", "level": 1}, {"url": "http://dhis/api/organisationUnitLevels/V9O2FgyImDt", "id": "V9O2FgyImDt", "name": "Region", "level": 2}, {"url": "http://dhis/api/organisationUnitLevels/a1XiGwfbe81", "id": "a1XiGwfbe81", "name": "District", "level": 3}, {"url": "http://dhis/api/organisationUnitLevels/fgJNYG1Ps13", "id": "fgJNYG1Ps13", "name": "Sub-County", "level": 4}, {"url": "http://dhis/api/organisationUnitLevels/G5kUCanhxGU", "id": "G5kUCanhxGU", "name": "Health Unit", "level": 5}], "level": 1}, "createdAt": "2012-08-14T09:59:50.324+0000"}'
         assert failure.action == "PUT"
