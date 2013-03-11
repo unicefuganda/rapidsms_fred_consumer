@@ -8,6 +8,6 @@
   response:
     body: {string: '{"name":"length must be between 2 and 160"}'}
     headers: {connection: close, content-length: '43', content-type: application/json;charset=UTF-8,
-      date: 'Tue, 19 Feb 2013 13:47:48 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=B2DA7C998AECC2F49B49088F57EF40C1;
+      date: 'Mon, 11 Mar 2013 14:14:28 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=63B71461345DCE2875A08140ED623A19;
         Path=/; HttpOnly}
     status: {code: 422, message: Unprocessable Entity}
