@@ -12,16 +12,14 @@
       "level": 1}, "createdAt": "2012-08-14T09:59:50.324+0000", "name": "new name
       12345"}'
     headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '1012',
-      Content-Type: application/json; charset="UTF-8", Etag: Rajini, Host: !!python/unicode 'dhis',
-      User-Agent: Python-urllib/2.7}
+      Content-Type: application/json; charset="UTF-8", Host: !!python/unicode 'dhis',
+      If-Match: Rajini, User-Agent: Python-urllib/2.7}
     method: PUT
     url: !!python/unicode '/api-fred/v1/facilities/nBDPw7Qhd7r.json'
   response:
-    body: {string: '{"uuid":"538780e2-8eb7-4c39-9430-7f877181937f","name":"new name
-        12345","active":true,"href":"http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r","createdAt":"2012-08-14T09:59:50.324+0000","updatedAt":"2013-03-11T14:54:11.300+0000","coordinates":[33.29045,0.02388],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"nBDPw7Qhd7r"}],"properties":{"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
-        Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}],"level":1,"ownership":"Government"}}'}
-    headers: {connection: close, content-length: '945', content-type: application/json;charset=UTF-8,
-      date: 'Mon, 11 Mar 2013 14:54:11 GMT', etag: '"0d4a68e2634f56da1c4019b462d3808ea"',
-      server: nginx/1.1.19, set-cookie: JSESSIONID=2B6FE689472DE63432476FAC67E5FD15;
+    body: {string: '{"code":"412","message":"ETag provided does not match current
+        ETag of facility"}'}
+    headers: {connection: close, content-length: '80', content-type: application/json;charset=UTF-8,
+      date: 'Tue, 12 Mar 2013 08:36:23 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=199C1D2150C787C4E918D9F2B82AB959;
         Path=/; HttpOnly}
-    status: {code: 200, message: OK}
+    status: {code: 412, message: Precondition Failed}
