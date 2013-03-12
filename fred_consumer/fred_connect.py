@@ -83,7 +83,7 @@ class FredFacilitiesFetcher(object):
         facility_url = HealthFacilityIdMap.objects.get(uuid=facility_id).url
         headers = {}
         if etag:
-            headers["ETag"] = etag
+            headers["If-Match"] = etag
         self.write(facility_url, facility, "PUT", headers)
         return True
 
