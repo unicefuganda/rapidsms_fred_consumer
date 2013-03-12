@@ -4,10 +4,7 @@ from urllib2 import HTTPError
 import random
 import string
 
-credentials = {
-  'username':"api",
-  'password':"P@ssw0rd",
-  'url'     :"http://dhis/api-fred/v1/facilities.json"}
+credentials = FredConfig.get_fred_configs()
 connector = FredFacilitiesFetcher(credentials)
 
 def new_name():
