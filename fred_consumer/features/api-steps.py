@@ -4,7 +4,7 @@ from urllib2 import HTTPError
 import random
 import string
 
-credentials = FredConfig.get_fred_configs()
+credentials = FredConfig.get_settings()
 connector = FredFacilitiesFetcher(credentials)
 
 def new_name():

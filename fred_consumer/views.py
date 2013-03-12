@@ -7,7 +7,7 @@ from celery.task.control import revoke
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def fred_config_page(request):
-  settings = FredConfig.get_fred_configs()
+  settings = FredConfig.get_settings()
   try:
     settings['last_job'] = JobStatus.objects.latest('id')
   except Exception, e:

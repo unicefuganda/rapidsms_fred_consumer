@@ -30,7 +30,7 @@ def create_facility(uuid):
 
 @celery.task
 def run_fred_sync():
-  fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+  fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
   fetcher.sync(current_task.request.id)
 
 @celery.task

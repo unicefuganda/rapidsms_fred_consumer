@@ -4,7 +4,7 @@ import settings
 
 class FredConfig():
   @classmethod
-  def get_fred_configs(self):
+  def get_settings(self):
       return settings.CONNECT_TO_FRED_KEYS
 
 class JobStatus(models.Model):

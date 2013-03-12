@@ -99,14 +99,14 @@ class FredFacilitiesFetcher(object):
     @staticmethod
     @return_in_boolean
     def send_facility_update(health_facility):
-        fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+        fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
         facility = {'name': health_facility.name}
         return fetcher.update_facilities_in_provider(health_facility.uuid, facility)
 
     @staticmethod
     @return_in_boolean
     def create_facility(health_facility):
-        fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+        fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
         facility = {'name': health_facility.name,
                     'active': True,
                     'coordinates': [0,0]

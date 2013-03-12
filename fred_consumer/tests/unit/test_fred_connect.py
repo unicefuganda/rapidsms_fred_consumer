@@ -9,7 +9,7 @@ from mock import *
 from fred_consumer.tasks import *
 import json
 
-FRED_CONFIG = FredConfig.get_fred_configs()
+FRED_CONFIG = FredConfig.get_settings()
 
 FIXTURES = os.path.abspath(fred_consumer.__path__[0]) + "/tests/fixtures/cassettes/"
 
@@ -22,7 +22,7 @@ URLS = {
 class TestFredFacilitiesFetcher(TestCase):
 
     def setUp(self):
-        self.fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+        self.fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
 
     def test_connect_to_fred_strips_slashes(self):
         fred_config = {'url': u'http://example////', 'username': '', 'password': ''}
@@ -141,7 +141,7 @@ class TestFredFacilitiesFetcher(TestCase):
             self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
-            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
             updated_facility = fetcher.get_facility(URLS['test_facility_id'])
             self.assertEqual(updated_facility['name'], facility.name)
 
@@ -155,7 +155,7 @@ class TestFredFacilitiesFetcher(TestCase):
             self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
-            fetcher = FredFacilitiesFetcher(FredConfig.get_fred_configs())
+            fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
             updated_facility = fetcher.get_facility(URLS['test_facility_id'])
             self.assertEqual(updated_facility['name'], facility.name)
 
@@ -176,7 +176,6 @@ class TestFredFacilitiesFetcher(TestCase):
 #                self.fetcher.update_facilities_in_provider(facility.uuid, facility_json)
 #                assert True == False, "Call Succeeded"
 #            except Exception, e:
-#                print "Exception is", str(e)
 #                assert str(e) == "HTTP Error 412: Precondition Failed"
 #
 #        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-updated-get.yaml"):
@@ -196,13 +195,10 @@ class TestFredFacilitiesFetcher(TestCase):
 
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
-        print "Failure:", failure.exception
         assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}:%s.json' % URLS['test_facility_url']
 
         failure_json = json.loads(failure.json)
         assert failure_json["name"] == facility.name
-        print "Failure url:", failure_json['href']
-        print "expected:", URLS['test_facility_url'].strip("/")
         assert failure_json["href"] == URLS['test_facility_url'].strip("/")
         assert failure.action == "PUT"
 
