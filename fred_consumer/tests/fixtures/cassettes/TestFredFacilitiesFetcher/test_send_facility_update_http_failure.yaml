@@ -2,7 +2,7 @@
     body: '{"uuid": "538780e2-8eb7-4c39-9430-7f877181937f", "identifiers": [{"agency":
       "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}], "coordinates": [33.29045,
       0.02388], "href": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r", "updatedAt":
-      "2013-03-12T08:35:43.940+0000", "active": true, "properties": {"hierarchy":
+      "2013-03-12T08:36:26.608+0000", "active": true, "properties": {"hierarchy":
       [{"url": "http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM", "id": "OwhPJYQ9gqM",
       "name": "MOH-Uganda", "level": 1}, {"url": "http://dhis/api/organisationUnitLevels/V9O2FgyImDt",
       "id": "V9O2FgyImDt", "name": "Region", "level": 2}, {"url": "http://dhis/api/organisationUnitLevels/a1XiGwfbe81",
@@ -12,12 +12,12 @@
       "level": 1}, "createdAt": "2012-08-14T09:59:50.324+0000", "name": ""}'
     headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '998',
       Content-Type: application/json; charset="UTF-8", Host: !!python/unicode 'dhis',
-      If-Match: '"0408ef5563a38ccd40f56acaa3d08be10"', User-Agent: Python-urllib/2.7}
+      If-Match: '"054898f0760284f672edad10c56f97954"', User-Agent: Python-urllib/2.7}
     method: PUT
     url: !!python/unicode '/api-fred/v1/facilities/nBDPw7Qhd7r.json'
   response:
     body: {string: '{"name":"length must be between 2 and 160"}'}
     headers: {connection: close, content-length: '43', content-type: application/json;charset=UTF-8,
-      date: 'Tue, 12 Mar 2013 08:36:25 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=A08DA9762A8EAAB4DF3DC7380EFD920B;
+      date: 'Tue, 12 Mar 2013 10:14:06 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=BDDD9AF6D5A89888915A5506B2E3CBEE;
         Path=/; HttpOnly}
     status: {code: 422, message: Unprocessable Entity}
