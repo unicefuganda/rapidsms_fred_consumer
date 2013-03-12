@@ -5,7 +5,7 @@ import settings
 class FredConfig():
   @classmethod
   def get_settings(self):
-      return settings.CONNECT_TO_FRED_KEYS
+      return settings.FRED_SETTINGS
 
 class JobStatus(models.Model):
   PENDING = "PENDING"
