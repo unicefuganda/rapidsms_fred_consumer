@@ -2,7 +2,7 @@
     body: '{"uuid": "538780e2-8eb7-4c39-9430-7f877181937f", "identifiers": [{"agency":
       "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}], "coordinates": [33.29045,
       0.02388], "href": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r", "updatedAt":
-      "2013-03-11T15:33:38.759+0000", "active": true, "properties": {"hierarchy":
+      "2013-03-12T07:49:48.533+0000", "active": true, "properties": {"hierarchy":
       [{"url": "http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM", "id": "OwhPJYQ9gqM",
       "name": "MOH-Uganda", "level": 1}, {"url": "http://dhis/api/organisationUnitLevels/V9O2FgyImDt",
       "id": "V9O2FgyImDt", "name": "Region", "level": 2}, {"url": "http://dhis/api/organisationUnitLevels/a1XiGwfbe81",
@@ -11,13 +11,13 @@
       "id": "G5kUCanhxGU", "name": "Health Unit", "level": 5}], "ownership": "Government",
       "level": 1}, "createdAt": "2012-08-14T09:59:50.324+0000", "name": ""}'
     headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '998',
-      Content-Type: application/json; charset="UTF-8", Etag: '"074a2ccbf271e501633b402bf1beacfed"',
+      Content-Type: application/json; charset="UTF-8", Etag: '"06158116a887c2a05f229af9d5e08fa9c"',
       Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
     method: PUT
     url: !!python/unicode '/api-fred/v1/facilities/nBDPw7Qhd7r.json'
   response:
     body: {string: '{"name":"length must be between 2 and 160"}'}
     headers: {connection: close, content-length: '43', content-type: application/json;charset=UTF-8,
-      date: 'Mon, 11 Mar 2013 15:38:32 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=CE453274F3BF3E00CFC94570855A7F95;
+      date: 'Tue, 12 Mar 2013 08:09:12 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=150DE7068BF4026449D5FCDEE6651A1A;
         Path=/; HttpOnly}
     status: {code: 422, message: Unprocessable Entity}

@@ -3,13 +3,13 @@
     headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
         charset="UTF-8", Host: dhis, User-Agent: Python-urllib/2.7}
     method: GET
-    url: /api-fred/v1/facilities/ZOSRi59GxiJ.json
+    url: /api-fred/v1/facilities/qsyvJriF0EU.json
   response:
-    body: {string: '{"uuid":"fe1a042c-6e7f-4d29-b178-ffc69abaa16f","name":"new name","active":true,"href":"http://dhis/api-fred/v1/facilities/ZOSRi59GxiJ","createdAt":"2013-03-11T15:37:36.012+0000","updatedAt":"2013-03-11T15:37:36.012+0000","coordinates":[0.0,0.0],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"ZOSRi59GxiJ"}],"properties":{"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+    body: {string: '{"uuid":"e807eea8-cf79-4e36-b3d4-a7bd391a2f98","name":"new name","active":true,"href":"http://dhis/api-fred/v1/facilities/qsyvJriF0EU","createdAt":"2013-03-12T08:08:22.647+0000","updatedAt":"2013-03-12T08:08:22.647+0000","coordinates":[0.0,0.0],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"qsyvJriF0EU"}],"properties":{"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
         Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}],"level":1}}'}
     headers: {cache-control: 'no-cache, no-store, max-age=0', connection: close, content-language: en-US,
-      content-length: '905', content-type: application/json;charset=UTF-8, date: 'Mon,
-        11 Mar 2013 15:37:36 GMT', etag: '"065916dc973314faad86f98ce49cac768"', expires: 'Thu,
-        01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=5DEA17356DB1E9003D6A0312EF0682C6;
+      content-length: '905', content-type: application/json;charset=UTF-8, date: 'Tue,
+        12 Mar 2013 08:08:23 GMT', etag: '"056a578aa21658db46bd6ba9eaf9e6dd6"', expires: 'Thu,
+        01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=129AA7248EACDB7B617FD6E0CE899F77;
         Path=/; HttpOnly}
     status: {code: 200, message: OK}
