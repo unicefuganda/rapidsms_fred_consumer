@@ -38,6 +38,7 @@ def process_facility(facility):
   try:
     uuid = facility['uuid']
     name = facility['name']
+    activeness = facility['active']
     HealthFacilityIdMap.store(uuid, facility['href'])
     existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
     if existing_facility:
@@ -46,6 +47,7 @@ def process_facility(facility):
       create_facility(uuid)
       facility = HealthFacilityBase.objects.get(uuid=uuid)
     facility.name = name.strip()
+    facility.active = activeness
     with reversion.create_revision():
         facility.save(cascade_update=False)
         reversion.set_user(API_USER)

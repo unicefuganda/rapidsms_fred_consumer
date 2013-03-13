@@ -74,7 +74,7 @@ class TestFredFacilitiesFetcher(TestCase):
       assert mock_process_facility.called == False
 
     def test_process_facility(self):
-      facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+      facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":false,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
 
       uuid = facility_json['uuid']
       HealthFacilityType.objects.filter(name="hcii").delete()
@@ -86,6 +86,8 @@ class TestFredFacilitiesFetcher(TestCase):
       facility.save(cascade_update=False)
       self.failUnless(facility.id)
 
+      assert facility.active == True
+
       assert len(HealthFacilityIdMap.objects.filter(uuid=uuid)) == 0
       assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 1
 
@@ -95,6 +97,7 @@ class TestFredFacilitiesFetcher(TestCase):
       self.failUnless(facility)
       self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
       assert facility.name == "BATMAN HC II"
+      assert facility.active == False
 
     def test_process_facility_create(self):
         facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
@@ -111,6 +114,7 @@ class TestFredFacilitiesFetcher(TestCase):
         self.failUnless(facility)
         self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
         assert facility.name == "BATMAN HC II"
+        assert facility.active == True
 
     def test_process_facility_failures(self):
       facility = {'name': 'name'}
@@ -209,7 +213,7 @@ class TestFredFacilitiesFetcher(TestCase):
         assert len(Failure.objects.all()) == 1
         failure = Failure.objects.all()[0]
         assert failure.exception == "DoesNotExist:HealthFacilityIdMap matching query does not exist."
-        facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'] }
+        facility_json = { 'name': 'new name', 'uuid': URLS['test_facility_id'], 'active': True}
         assert failure.json == json.dumps(facility_json)
         assert failure.action == "GENERIC"
 
