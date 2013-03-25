@@ -14,7 +14,7 @@ FRED_CONFIG = FredConfig.get_settings()
 FIXTURES = os.path.abspath(fred_consumer.__path__[0]) + "/tests/fixtures/cassettes/"
 
 URLS = {
-    'test_facility_url'      : FRED_CONFIG['url'] + 'facilities/nBDPw7Qhd7r',
+    'test_facility_url'      : 'http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r.json',
     'test_facility_id'       : 'nBDPw7Qhd7r',
     'test_wrong_facility_id' : 'naDPw7Qhd7B'
 }
@@ -24,21 +24,16 @@ class TestFredFacilitiesFetcher(TestCase):
     def setUp(self):
         self.fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
 
-    def test_connect_to_fred_strips_slashes(self):
-        fred_config = {'url': u'http://example////', 'username': '', 'password': ''}
-        self.fetcher = FredFacilitiesFetcher(fred_config)
-        assert self.fetcher.BASE_URL == 'http://example'
-
     def test_get_all_facilities(self):
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             obj = self.fetcher.get_all_facilities()
             self.assertIsNotNone(obj)
 
-    def test_get_all_facilities_calls_with_limit(self):
+    def test_get_all_facilities_calls_without_limit(self):
         self.fetcher.get_json = MagicMock(return_value={"facilities":[]})
         obj = self.fetcher.get_all_facilities()
 
-        self.fetcher.get_json.assert_called_with(url=FRED_CONFIG['url'].strip("/") + "/facilities", query='limit=off', extension='.json')
+        self.fetcher.get_json.assert_called_with(query='limit=off')
 
     def test_get_filtered_facilities(self):
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
@@ -54,16 +49,16 @@ class TestFredFacilitiesFetcher(TestCase):
     @patch('fred_consumer.tasks.process_facility.delay')
     def test_sync(self, mock_process_facility):
       with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/test_get_all_facilities.yaml"):
-        assert len(JobStatus.objects.all()) == 0
+        self.assertEquals(0, len(JobStatus.objects.all()))
         self.fetcher.sync("JOB ID")
-        assert JobStatus.objects.all()[0].status == JobStatus.SUCCESS
+        self.assertEquals(JobStatus.SUCCESS, JobStatus.objects.all()[0].status)
         assert mock_process_facility.called
 
     def test_sync_failed(self):
       self.fetcher.fetch_facilities = MagicMock(side_effect=Exception('Boom!'))
       assert len(JobStatus.objects.all()) == 0
       self.fetcher.sync("JOB ID")
-      assert JobStatus.objects.all()[0].status == JobStatus.FAILED
+      assert JobStatus.FAILED == JobStatus.objects.all()[0].status
 
     @patch('fred_consumer.tasks.process_facility.delay')
     def test_sync_with_filters(self, mock_process_facility):
@@ -131,13 +126,13 @@ class TestFredFacilitiesFetcher(TestCase):
       assert mocked_sync.called
 
     def test_send_facility_update_without_etag(self):
-        facility = HealthFacility(name = "new name", uuid= URLS['test_facility_id'])
+        facility = HealthFacility(name="new name", uuid=URLS['test_facility_id'])
         facility.save(cascade_update=False)
-        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url=URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
-            response = self.fetcher.get("/facilities/" + facility.uuid + ".json")
+            response = self.fetcher.get(URLS['test_facility_url'])
             response.info().getheader = MagicMock(return_value = None)
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
@@ -152,7 +147,7 @@ class TestFredFacilitiesFetcher(TestCase):
     def test_send_facility_update_with_etag(self):
         facility = HealthFacility(name = "new name", uuid= URLS['test_facility_id'])
         facility.save(cascade_update=False)
-        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url=URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
@@ -166,11 +161,11 @@ class TestFredFacilitiesFetcher(TestCase):
     def test_send_facility_update_failure_with_etag(self):
         facility = HealthFacility(name = "new name 12345", uuid= URLS['test_facility_id'])
         facility.save(cascade_update=False)
-        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url=URLS['test_facility_url'], uuid=URLS['test_facility_id'])
         facility_json = { 'name': facility.name }
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
-            response = self.fetcher.get("/facilities/" + facility.uuid + ".json")
+            response = self.fetcher.get(URLS['test_facility_url'])
             response.info().getheader = MagicMock(return_value = "Rajini")
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-put.yaml"):
@@ -187,23 +182,23 @@ class TestFredFacilitiesFetcher(TestCase):
             assert updated_facility['name'] != facility.name
 
     def test_send_facility_update_http_failure(self):
-        assert len(Failure.objects.all()) == 0
+        self.assertEquals(0, len(Failure.objects.all()))
         facility = HealthFacility(name = "initial name", uuid= URLS['test_facility_id'])
         facility.save(cascade_update=False)
         facility.name = ""
-        HealthFacilityIdMap.objects.create(url= URLS['test_facility_url'], uuid=URLS['test_facility_id'])
+        HealthFacilityIdMap.objects.create(url=URLS['test_facility_url'], uuid=URLS['test_facility_id'])
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             assert FredFacilitiesFetcher.send_facility_update(facility) == False
 
-        assert len(Failure.objects.all()) == 1
+        self.assertEquals(1, len(Failure.objects.all()))
         failure = Failure.objects.all()[0]
-        assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}:%s.json' % URLS['test_facility_url']
+        self.assertEquals('HTTPError:{"name":"length must be between 2 and 160"}:%s' % URLS['test_facility_url'], failure.exception)
 
         failure_json = json.loads(failure.json)
-        assert failure_json["name"] == facility.name
-        assert failure_json["href"] == URLS['test_facility_url'].strip("/")
-        assert failure.action == "PUT"
+        self.assertEquals(facility.name, failure_json["name"])
+        self.assertEquals(URLS['test_facility_url'], failure_json["href"])
+        self.assertEquals("PUT", failure.action)
 
     def test_send_facility_update_facility_doesnt_exist_failure(self):
         assert len(Failure.objects.all()) == 0
@@ -238,8 +233,8 @@ class TestFredFacilitiesFetcher(TestCase):
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-post.yaml"):
             self.failUnlessRaises(ValidationError, facility.save)
 
-        assert len(Failure.objects.all()) == 1
+        self.assertEquals(1, len(Failure.objects.all()))
         failure = Failure.objects.all()[0]
-        assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}:http://dhis/api-fred/v1/facilities.json'
-        assert failure.action == "POST"
-        assert failure.json == '{"active": true, "name": "", "coordinates": [0, 0]}'
+        self.assertEquals('HTTPError:{"name":"length must be between 2 and 160"}:http://dhis/api-fred/v1/facilities.json', failure.exception)
+        self.assertEquals("POST", failure.action)
+        self.assertEquals('{"active": true, "name": "", "coordinates": [0, 0]}', failure.json)

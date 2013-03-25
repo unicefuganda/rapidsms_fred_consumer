@@ -1,7 +1,7 @@
 - request:
     body: '{"uuid": "538780e2-8eb7-4c39-9430-7f877181937f", "identifiers": [{"agency":
       "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}], "coordinates": [33.29045,
-      0.02388], "href": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r", "updatedAt":
+      0.02388], "href": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r.json", "updatedAt":
       "2013-03-12T08:36:26.608+0000", "active": true, "properties": {"hierarchy":
       [{"url": "http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM", "id": "OwhPJYQ9gqM",
       "name": "MOH-Uganda", "level": 1}, {"url": "http://dhis/api/organisationUnitLevels/V9O2FgyImDt",
@@ -28,7 +28,7 @@
     method: GET
     url: !!python/unicode '/api-fred/v1/facilities/nBDPw7Qhd7r.json'
   response:
-    body: {string: '{"uuid":"538780e2-8eb7-4c39-9430-7f877181937f","name":"new name","active":true,"href":"http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r","createdAt":"2012-08-14T09:59:50.324+0000","updatedAt":"2013-03-12T10:23:53.974+0000","coordinates":[33.29045,0.02388],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"nBDPw7Qhd7r"}],"properties":{"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+    body: {string: '{"uuid":"538780e2-8eb7-4c39-9430-7f877181937f","name":"new name","active":true,"href":"http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r.json","createdAt":"2012-08-14T09:59:50.324+0000","updatedAt":"2013-03-12T10:23:53.974+0000","coordinates":[33.29045,0.02388],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"nBDPw7Qhd7r"}],"properties":{"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","url":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","url":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","url":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","url":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
         Unit","url":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}],"level":1,"ownership":"Government"}}'}
     headers: {cache-control: 'no-cache, no-store, max-age=0', connection: close, content-language: en-US,
       content-length: '939', content-type: application/json;charset=UTF-8, date: 'Tue,
@@ -39,7 +39,7 @@
 - request:
     body: '{"uuid": "538780e2-8eb7-4c39-9430-7f877181937f", "identifiers": [{"agency":
       "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}], "coordinates": [33.29045,
-      0.02388], "href": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r", "updatedAt":
+      0.02388], "href": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r.json", "updatedAt":
       "2013-03-12T10:23:53.974+0000", "active": true, "properties": {"hierarchy":
       [{"url": "http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM", "id": "OwhPJYQ9gqM",
       "name": "MOH-Uganda", "level": 1}, {"url": "http://dhis/api/organisationUnitLevels/V9O2FgyImDt",
@@ -57,5 +57,28 @@
     body: {string: '{"name":"length must be between 2 and 160"}'}
     headers: {connection: close, content-length: '43', content-type: application/json;charset=UTF-8,
       date: 'Tue, 12 Mar 2013 10:24:55 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=3762E4C3CA5441A4059F85A8E77F12F1;
+        Path=/; HttpOnly}
+    status: {code: 422, message: Unprocessable Entity}
+- request:
+    body: '{"uuid": "538780e2-8eb7-4c39-9430-7f877181937f", "identifiers": [{"agency":
+      "DHIS2", "id": "nBDPw7Qhd7r", "context": "DHIS2_UID"}], "coordinates": [33.29045,
+      0.02388], "href": "http://dhis/api-fred/v1/facilities/nBDPw7Qhd7r.json", "updatedAt":
+      "2013-03-12T10:23:53.974+0000", "active": true, "properties": {"hierarchy":
+      [{"url": "http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM", "id": "OwhPJYQ9gqM",
+      "name": "MOH-Uganda", "level": 1}, {"url": "http://dhis/api/organisationUnitLevels/V9O2FgyImDt",
+      "id": "V9O2FgyImDt", "name": "Region", "level": 2}, {"url": "http://dhis/api/organisationUnitLevels/a1XiGwfbe81",
+      "id": "a1XiGwfbe81", "name": "District", "level": 3}, {"url": "http://dhis/api/organisationUnitLevels/fgJNYG1Ps13",
+      "id": "fgJNYG1Ps13", "name": "Sub-County", "level": 4}, {"url": "http://dhis/api/organisationUnitLevels/G5kUCanhxGU",
+      "id": "G5kUCanhxGU", "name": "Health Unit", "level": 5}], "ownership": "Government",
+      "level": 1}, "createdAt": "2012-08-14T09:59:50.324+0000", "name": ""}'
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Length: '1003',
+      Content-Type: application/json; charset="UTF-8", Host: !!python/unicode 'dhis',
+      If-Match: '"0c978970c774b578db043e5ffff8380b0"', User-Agent: Python-urllib/2.7}
+    method: PUT
+    url: !!python/unicode '/api-fred/v1/facilities/nBDPw7Qhd7r.json'
+  response:
+    body: {string: '{"name":"length must be between 2 and 160"}'}
+    headers: {connection: close, content-length: '43', content-type: application/json;charset=UTF-8,
+      date: 'Tue, 26 Mar 2013 15:45:52 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=8C5B614B377CDDF5AD58878D4F75A3C1;
         Path=/; HttpOnly}
     status: {code: 422, message: Unprocessable Entity}
