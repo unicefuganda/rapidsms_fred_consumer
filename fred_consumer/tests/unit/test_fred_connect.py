@@ -74,7 +74,7 @@ class TestFredFacilitiesFetcher(TestCase):
       assert mock_process_facility.called == False
 
     def test_process_facility(self):
-      facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":false,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+      facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": false,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["123456"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "56789",    "type": "General Hospital"  }}')
 
       uuid = facility_json['uuid']
       HealthFacilityType.objects.filter(name="hcii").delete()
@@ -96,11 +96,11 @@ class TestFredFacilitiesFetcher(TestCase):
       facility = HealthFacilityBase.objects.filter(uuid=uuid)[0]
       self.failUnless(facility)
       self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
-      assert facility.name == "BATMAN HC II"
+      assert facility.name == facility_json['name'].strip()
       assert facility.active == False
 
     def test_process_facility_create(self):
-        facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+        facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["123456"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "56789",    "type": "General Hospital"  }}')
         uuid = facility_json['uuid']
         HealthFacilityType.objects.filter(name="hcii").delete()
         HealthFacilityBase.objects.filter(uuid=uuid).delete()
@@ -113,7 +113,7 @@ class TestFredFacilitiesFetcher(TestCase):
         facility = HealthFacilityBase.objects.filter(uuid=uuid)[0]
         self.failUnless(facility)
         self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
-        assert facility.name == "BATMAN HC II"
+        assert facility.name == facility_json['name'].strip()
         assert facility.active == True
 
     def test_process_facility_failures(self):

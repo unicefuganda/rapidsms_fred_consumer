@@ -16,7 +16,7 @@ FACILITY_TYPE_MAP = {
                       'HOSPITAL'          : 'hospital',
                     }
 API_USER = User.objects.get(id=-1)
-UPDATE_COMMENT = "Updated name field from DHIS2."
+UPDATE_COMMENT = "Updated by FRED changes."
 
 def find_facility_type(text):
   rc = re.compile('|'.join(map(re.escape, FACILITY_TYPE_MAP.keys())), re.IGNORECASE)
@@ -34,24 +34,12 @@ def run_fred_sync():
   fetcher.sync(current_task.request.id)
 
 @celery.task
-def process_facility(facility):
+def process_facility(facility_json):
   try:
-    uuid = facility['uuid']
-    name = facility['name']
-    activeness = facility['active']
-    HealthFacilityIdMap.store(uuid, facility['href'])
-    existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
-    if existing_facility:
-      facility = existing_facility[0]
-    else:
-      create_facility(uuid)
-      facility = HealthFacilityBase.objects.get(uuid=uuid)
-    facility.name = name.strip()
-    facility.active = activeness
-    with reversion.create_revision():
-        facility.save(cascade_update=False)
-        reversion.set_user(API_USER)
-        reversion.set_comment(UPDATE_COMMENT)
+    facility_json['name'] = facility_json['name'].strip()
+    HealthFacilityIdMap.store(facility_json['uuid'], facility_json['href'])
+    facility = HealthFacilityBase.store_json(facility_json, comment = UPDATE_COMMENT, cascade_update = False)
   except Exception, e:
     exception = type(e).__name__ +":"+ str(e)
-    Failure.objects.create(exception=exception, json=facility)
+    print exception
+    Failure.objects.create(exception=exception, json=facility_json)
