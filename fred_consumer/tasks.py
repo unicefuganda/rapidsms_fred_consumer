@@ -41,5 +41,4 @@ def process_facility(facility_json):
     facility = HealthFacilityBase.store_json(facility_json, comment = UPDATE_COMMENT, cascade_update = False)
   except Exception, e:
     exception = type(e).__name__ +":"+ str(e)
-    print exception
     Failure.objects.create(exception=exception, json=facility_json)

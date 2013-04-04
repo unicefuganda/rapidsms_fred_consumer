@@ -52,7 +52,6 @@ class TestHealthFacilityIdMap(TestCase):
 
         maps = HealthFacilityIdMap.objects.filter(uuid=uuid)
         assert len(maps) == 1
-        print maps[0].uuid, maps[0].url
         assert maps[0].url == another_url
 
     def test_uuid_as_primary_key(self):

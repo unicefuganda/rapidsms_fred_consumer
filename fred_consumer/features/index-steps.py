@@ -22,6 +22,11 @@ def set_browser():
   world.browser = Browser()
   JobStatus.objects.all().delete()
 
+@before.each_scenario
+def delete_created_facilities(step):
+    HealthFacility.objects.filter(uuid = "1234").delete()
+    HealthFacilityIdMap.objects.filter(uuid="1234").delete()
+
 @after.all
 def close_browser(*args):
   facilities = HealthFacility.objects.filter(uuid = "1234").all()
@@ -79,7 +84,7 @@ def option_for_run_job(step):
 
 @step(u'Given I process a facility')
 def given_i_process_a_facility(step):
-  facility_json = json.loads('{"facilities":[{"uuid":"1234","name":"Apo","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+  facility_json = json.loads('{  "uuid": "1234",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["123456"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "56789",    "type": "General Hospital"  }}')
 
   facility_json['name'] = "Apo" + str(randint(1,9999))
   facility = HealthFacility(name="ThoughtWorks facility", uuid = "1234")
@@ -96,7 +101,7 @@ def given_i_process_a_facility(step):
 
 @step(u'Given I process a new facility')
 def given_i_process_a_new_facility(step):
-    facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXy","name":"Apo","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+    facility_json = json.loads('{  "uuid": "1234",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["123456"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "56789",    "type": "General Hospital"  }}')
 
     uuid = facility_json['uuid']
     facility_json['name'] = "Apo" + str(randint(1,9999))
@@ -114,16 +119,16 @@ def given_i_process_a_new_facility(step):
 
     assert id_map.url == facility_json['href']
     assert facility.name == facility_json['name']
+    world.uuid = uuid
 
 @step(u'And I should see new reversion logs for the latest facility')
 def and_i_should_see_reversion_logs_for_new_record(step):
-  facility = HealthFacilityBase.objects.filter(uuid='6VeE8JrylXy')
+  facility = HealthFacilityBase.objects.filter(uuid=world.uuid)
   facility = facility[0]
   version_list = reversion.get_for_object(facility)
   assert len(version_list) == 1
   version = version_list[0]
   assert version.revision.comment == UPDATE_COMMENT
-  assert version.revision.user == API_USER
 
 
 @step(u'And I should see reversion logs')
@@ -134,7 +139,6 @@ def and_i_should_see_reversion_logs(step):
   assert len(version_list) == 1
   version = version_list[0]
   assert version.revision.comment == UPDATE_COMMENT
-  assert version.revision.user == API_USER
 
 @step(u'Given I have few failures from Fred sync')
 def and_i_have_few_failures_from_fred_sync(step):
