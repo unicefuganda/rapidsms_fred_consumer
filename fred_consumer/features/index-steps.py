@@ -11,6 +11,7 @@ from random import randint
 from datetime import datetime
 import reversion, json
 from fred_consumer.tasks import *
+from healthmodels.models.HealthFacility import *
 
 @transaction.commit_on_success
 def create_facility(f):
@@ -24,7 +25,7 @@ def set_browser():
 
 @before.each_scenario
 def delete_created_facilities(step):
-    HealthFacility.objects.filter(uuid = "1234").delete()
+    HealthFacilityBase.objects.filter(uuid = "1234").delete()
     HealthFacilityIdMap.objects.filter(uuid="1234").delete()
 
 @after.all
