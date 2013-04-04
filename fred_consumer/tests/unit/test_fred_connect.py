@@ -99,7 +99,7 @@ class TestFredFacilitiesFetcher(TestCase):
       assert facility.name == facility_json['name'].strip()
       assert facility.active == False
 
-      fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+      fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
       assert fred_facility_details.h003b == False
 
     def test_process_facility_create(self):
@@ -119,7 +119,7 @@ class TestFredFacilitiesFetcher(TestCase):
         assert facility.name == facility_json['name'].strip()
         assert facility.active == True
 
-        fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+        fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
         assert fred_facility_details.h003b == True
 
     def test_process_facility_failures(self):
