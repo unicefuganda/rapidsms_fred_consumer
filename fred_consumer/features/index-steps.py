@@ -49,6 +49,8 @@ def access_landing_page(step):
 
 @step(u'Then I should see all the fields')
 def validate_landing_page_fields(step):
+  print world.browser.url
+  print world.browser.url
   assert world.browser.is_text_present("FRED Sync", wait_time=3)
   assert world.browser.is_text_present("Failures")
 
