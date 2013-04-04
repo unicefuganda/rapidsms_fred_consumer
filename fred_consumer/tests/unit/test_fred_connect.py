@@ -99,8 +99,11 @@ class TestFredFacilitiesFetcher(TestCase):
       assert facility.name == facility_json['name'].strip()
       assert facility.active == False
 
+      fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+      assert fred_facility_details.h003b == False
+
     def test_process_facility_create(self):
-        facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["123456"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "56789",    "type": "General Hospital"  }}')
+        facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["V1kJRs8CtW4"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "56789",    "type": "General Hospital"  }}')
         uuid = facility_json['uuid']
         HealthFacilityType.objects.filter(name="hcii").delete()
         HealthFacilityBase.objects.filter(uuid=uuid).delete()
@@ -115,6 +118,9 @@ class TestFredFacilitiesFetcher(TestCase):
         self.failUnless(HealthFacilityIdMap.objects.filter(uuid=uuid)[0])
         assert facility.name == facility_json['name'].strip()
         assert facility.active == True
+
+        fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+        assert fred_facility_details.h003b == True
 
     def test_process_facility_failures(self):
       facility = {'name': 'name'}
