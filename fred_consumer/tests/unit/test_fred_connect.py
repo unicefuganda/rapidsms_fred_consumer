@@ -249,3 +249,19 @@ class TestFredFacilitiesFetcher(TestCase):
         assert failure.exception == 'HTTPError:{"name":"length must be between 2 and 160"}:http://dhis/api-fred/v1/facilities.json'
         assert failure.action == "POST"
         assert failure.json == '{"active": true, "name": "", "coordinates": [0, 0]}'
+
+    def test_create_facility_non_http_failure(self):
+        facility = HealthFacility(name = "new name")
+        facility_json = {'name': facility.name,
+                         'active': True,
+                         'coordinates': [0,0]
+        }
+        assert len(Failure.objects.all()) == 0
+        with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
+            self.failUnlessRaises(ValidationError, facility.save)
+
+        assert len(Failure.objects.all()) == 1
+        failure = Failure.objects.all()[0]
+        assert failure.exception == "KeyError:'uuid'"
+        assert failure.json == json.dumps({"active": True, "name": "new name", "coordinates": [0, 0]})
+        assert failure.action == "GENERIC"

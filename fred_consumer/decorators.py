@@ -20,8 +20,11 @@ def capture_generic_exception(fn):
         except HTTPError, e:
             raise e
         except Exception, e:
-            facility = args[2]
-            facility['uuid'] = args[1]
+            if len(args) > 2:
+                facility = args[2]
+                facility['uuid'] = args[1]
+            else:
+                facility = args[1]
             exception = type(e).__name__ +":"+ str(e)
             Failure.objects.create(exception=exception, json=json.dumps(facility), action = "GENERIC")
             raise e
