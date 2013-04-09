@@ -9,7 +9,8 @@ def capture_urllib_exception(fn):
         except HTTPError, e:
             request = args[1]
             exception = type(e).__name__ +":"+ str(e.read()) + ":" + request.get_full_url()
-            Failure.objects.create(exception=exception, json=request.data, action = request.get_method())
+            json = request.data if request.data else ""
+            Failure.objects.create(exception=exception, json=json, action = request.get_method())
             raise e
     return wrapped
 
