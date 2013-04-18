@@ -267,9 +267,8 @@ class TestFredFacilitiesFetcher(TestCase):
         assert failure.action == "GENERIC"
 
     def test_get_locations_for_facility(self):
-        uuid = "667be5c8-93d1-4417-a745-af609184aec9"
-        HealthFacilityIdMap.objects.create(uuid = uuid, url= "http://dhis/api-fred/v1/facilities/J2JiemiIQvD")
+        parent_id = "y1iun1mJXWa"
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + "-get.yaml"):
-            location = self.fetcher.get_locations_for_facility(uuid)
+            location = self.fetcher.get_locations_for_facility(parent_id)
         assert location["subcounty"] == "Usuk"
         assert location["district"] == "Katakwi"
