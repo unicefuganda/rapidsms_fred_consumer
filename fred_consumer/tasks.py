@@ -38,8 +38,9 @@ def add_catchment_area(facility_json, facility):
     fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
     existing_catchment_areas = set(facility.catchment_areas.all())
     location_hash = fetcher.get_locations_for_facility(facility_json['properties']['parent'])
-    district = Location.objects.filter(name=location_hash["district"], type = "district")[0]
-    subcounty = Location.objects.filter(name=location_hash["subcounty"], type = "sub_county", parent_id = district.id)
+    district = Location.objects.filter(name=location_hash["district"], type = "district")
+    district = district[0]
+    subcounty = district.get_descendants().filter(name=location_hash["subcounty"], type = "sub_county")
     if subcounty:
         existing_catchment_areas.update(subcounty)
     else:

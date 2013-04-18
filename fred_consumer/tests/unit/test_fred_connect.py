@@ -280,8 +280,10 @@ class TestFredFacilitiesFetcher(TestCase):
         HealthFacilityType.objects.filter(name="hcii").delete()
         HealthFacilityBase.objects.filter(uuid=uuid).delete()
         district = Location.objects.create(name="Katakwi", type_id = "district")
-        sub_county = Location.objects.create(name="Usuk", type_id = "sub_county", parent_id = district.id)
-        parish = Location.objects.create(name="Some Parish", type_id = "parish", parent_id = sub_county.id)
+        county = Location.objects.create(name="Some county", type_id = "parish")
+        county.set_parent(district)
+        sub_county = Location.objects.create(name="Usuk", type_id = "sub_county")
+        sub_county.set_parent(county)
 
         assert len(HealthFacilityIdMap.objects.filter(uuid=uuid)) == 0
         assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 0
@@ -300,10 +302,11 @@ class TestFredFacilitiesFetcher(TestCase):
 
         catchment_areas = facility.catchment_areas.all()
         assert len(catchment_areas) == 1
+        print catchment_areas
         assert catchment_areas[0].name == "Usuk"
 
         facility = HealthFacilityBase.objects.filter(uuid=uuid)[0]
-        facility.catchment_areas = [district, sub_county, parish]
+        facility.catchment_areas = [district, sub_county, county]
         facility.save(cascade_update = False)
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
