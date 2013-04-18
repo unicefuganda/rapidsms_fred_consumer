@@ -11,3 +11,16 @@
       date: 'Mon, 11 Mar 2013 14:14:28 GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=63B71461345DCE2875A08140ED623A19;
         Path=/; HttpOnly}
     status: {code: 422, message: Unprocessable Entity}
+- request:
+    body: '{"active": true, "name": "", "coordinates": [0, 0]}'
+    headers: {Authorization: Basic bXRyYWNfZmFjaWxpdGllc19ydzo0d2hvbXRoZUJlbGx0b2xsZWQ=,
+      Connection: close, Content-Length: '51', Content-Type: application/json; charset="UTF-8",
+      Host: !!python/unicode 'file.health.go.ug', User-Agent: Python-urllib/2.7}
+    method: POST
+    url: !!python/unicode '/api-fred/v1/facilities.json'
+  response:
+    body: {string: '{"name":"length must be between 2 and 160"}'}
+    headers: {connection: close, content-length: '43', content-type: application/json;charset=UTF-8,
+      date: 'Thu, 18 Apr 2013 18:12:22 GMT', set-cookie: JSESSIONID=8B6EB0874D99706555DC1D6CCADD02A0;
+        Path=/; Secure; HttpOnly}
+    status: {code: 422, message: Unprocessable Entity}

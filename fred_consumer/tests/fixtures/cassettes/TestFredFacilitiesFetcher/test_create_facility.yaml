@@ -43,3 +43,36 @@
         01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=15B06A973A4F511B748FD654CC9EF4A4;
         Path=/; HttpOnly}
     status: {code: 200, message: OK}
+- request:
+    body: '{"active": true, "name": "new name", "coordinates": [0, 0]}'
+    headers: {Authorization: Basic bXRyYWNfZmFjaWxpdGllc19ydzo0d2hvbXRoZUJlbGx0b2xsZWQ=,
+      Connection: close, Content-Length: '59', Content-Type: application/json; charset="UTF-8",
+      Host: !!python/unicode 'file.health.go.ug', User-Agent: Python-urllib/2.7}
+    method: POST
+    url: !!python/unicode '/api-fred/v1/facilities.json'
+  response:
+    body: {string: '{"uuid":"9a3d1490-f3ab-4b86-a0e0-6451969180c4","name":"new name","active":true,"href":"https://file.health.go.ug/api-fred/v1/facilities/y2lh3lqSsOM","createdAt":"2013-04-18T18:12:22.206+0000","updatedAt":"2013-04-18T18:12:22.206+0000","coordinates":[0.0,0.0],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"y2lh3lqSsOM"}],"properties":{"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","href":"https://file.health.go.ug/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","href":"https://file.health.go.ug/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","href":"https://file.health.go.ug/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","href":"https://file.health.go.ug/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+        Unit","href":"https://file.health.go.ug/api/organisationUnitLevels/G5kUCanhxGU"},{"id":"VvJDrUAZsNO","level":6,"name":"Level
+        6","href":"https://file.health.go.ug/api/organisationUnitLevels/VvJDrUAZsNO"}],"level":1}}'}
+    headers: {connection: close, content-length: '1116', content-type: application/json;charset=UTF-8,
+      date: 'Thu, 18 Apr 2013 18:12:22 GMT', etag: '"0500e57487fa4b0ec2d84e9694924076d"',
+      location: 'https://file.health.go.ug/api-fred/v1/facilities/y2lh3lqSsOM', set-cookie: JSESSIONID=240B9003B2DD7D435522EC7C49325BC1;
+        Path=/; Secure; HttpOnly}
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers: {Authorization: Basic bXRyYWNfZmFjaWxpdGllc19ydzo0d2hvbXRoZUJlbGx0b2xsZWQ=,
+      Connection: close, Content-Type: application/json; charset="UTF-8", Host: file.health.go.ug,
+      User-Agent: Python-urllib/2.7}
+    method: GET
+    url: /api-fred/v1/facilities/y2lh3lqSsOM.json
+  response:
+    body: {string: '{"uuid":"9a3d1490-f3ab-4b86-a0e0-6451969180c4","name":"new name","active":true,"href":"https://file.health.go.ug/api-fred/v1/facilities/y2lh3lqSsOM","createdAt":"2013-04-18T18:12:22.206+0000","updatedAt":"2013-04-18T18:12:22.206+0000","coordinates":[0.0,0.0],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"y2lh3lqSsOM"}],"properties":{"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","href":"https://file.health.go.ug/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","href":"https://file.health.go.ug/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","href":"https://file.health.go.ug/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","href":"https://file.health.go.ug/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+        Unit","href":"https://file.health.go.ug/api/organisationUnitLevels/G5kUCanhxGU"},{"id":"VvJDrUAZsNO","level":6,"name":"Level
+        6","href":"https://file.health.go.ug/api/organisationUnitLevels/VvJDrUAZsNO"}],"level":1}}'}
+    headers: {cache-control: 'no-cache, no-store, max-age=0', connection: close, content-language: en-US,
+      content-length: '1116', content-type: application/json;charset=UTF-8, date: 'Thu,
+        18 Apr 2013 18:12:22 GMT', etag: '"0500e57487fa4b0ec2d84e9694924076d"', expires: 'Thu,
+        01 Jan 1970 00:00:00 GMT', pragma: no-cache, set-cookie: JSESSIONID=2ECE5D6A9167F40BD685A691AC48DED4;
+        Path=/; Secure; HttpOnly}
+    status: {code: 200, message: OK}

@@ -78,13 +78,21 @@ class FredFacilitiesFetcher(object):
         except Exception:
             status.succeeded(False)
 
-    @capture_generic_exception
+    def get_district(self, url):
+      location = self.get_json(url = url, extension = JSON_EXTENSION)
+      if 'district' in location['name'].lower():
+          return location['name']
+      else:
+        return self.get_district(location['parent']['href'])
+
+
     def get_locations_for_facility(self, parent_id):
         location_hash = {}
         parent_facility_url = self.DHIS_ORG_UNIT_URL + parent_id
         parent_facility = self.get_json(url = parent_facility_url, extension = JSON_EXTENSION)
         location_hash["subcounty"] = re.sub('Subcounty.*$|Sub\ County.*$', "", parent_facility["name"]).strip()
-        location_hash["district"] = re.sub('District.*$', "", parent_facility["parent"]["name"]).strip()
+        district = self.get_district(parent_facility_url)
+        location_hash["district"] = re.sub('District.*$', "", district).strip()
         return location_hash
 
     @capture_generic_exception

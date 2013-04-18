@@ -54,7 +54,7 @@ def process_facility(facility_json):
     facility_json['name'] = facility_json['name'].strip()
     HealthFacilityIdMap.store(facility_json['uuid'], facility_json['href'])
     facility = HealthFacilityBase.store_json(facility_json, comment = UPDATE_COMMENT, cascade_update = False)
-    if facility_json["properties"].has_key("dataSets"):
+    if facility_json["properties"].has_key("dataSets") and facility_json['properties'].has_key('ownership') and facility_json['properties'].has_key('type'):
         add_catchment_area(facility_json, facility)
   except Exception, e:
     exception = type(e).__name__ +":"+ str(e)
