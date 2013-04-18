@@ -1,0 +1,18 @@
+- request:
+    body: null
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
+        charset="UTF-8", Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
+    method: GET
+    url: !!python/unicode '/api/organisationUnits/y1iun1mJXWa.json'
+  response:
+    body: {string: '{"name":"Usuk Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","shortName":"Usuk
+        Subcounty","parent":{"name":"Katakwi District","created":"2012-12-11T11:24:00.318+0000","lastUpdated":"2012-12-11T11:24:00.318+0000","href":"http://dhis/api/organisationUnits/cSrCFjPKqcG","id":"cSrCFjPKqcG"},"active":true,"featureType":"Polygon","coordinates":"[[[[34.0053,2.0980],[34.1081,2.0623],[34.0927,2.0201],[34.0980,1.9828],[34.0259,1.9254],[34.0310,1.9587],[34.0007,1.9855],[33.8968,1.9807],[33.8758,2.0094],[33.8972,2.0222],[33.8882,2.0368],[33.9007,2.0465],[33.9292,2.0484],[33.9483,2.0703],[33.9931,2.0668],[34.0053,2.0980]]]]","users":[{"name":"Julius
+        Kasamba","created":"2012-12-11T15:04:26.015+0000","lastUpdated":"2012-12-11T15:04:26.015+0000","href":"http://dhis/api/users/bwZxIo7iahf","id":"bwZxIo7iahf"}],"children":[{"name":"St.
+        Anne Usuk HC III","created":"2012-08-14T10:18:08.382+0000","lastUpdated":"2012-08-14T10:18:08.382+0000","href":"http://dhis/api/organisationUnits/vGFHvU2m9uE","id":"vGFHvU2m9uE"},{"name":"Koritok
+        HC II","created":"2012-08-14T10:18:08.371+0000","lastUpdated":"2012-08-14T10:18:08.371+0000","href":"http://dhis/api/organisationUnits/EEwBWZQ7Qre","id":"EEwBWZQ7Qre"},{"name":"Aakum
+        HC II","created":"2012-08-14T10:18:08.391+0000","lastUpdated":"2012-08-14T10:18:08.391+0000","href":"http://dhis/api/organisationUnits/J2JiemiIQvD","id":"J2JiemiIQvD"}],"level":4,"href":"http://dhis/api/organisationUnits/y1iun1mJXWa","id":"y1iun1mJXWa"}'}
+    headers: {connection: close, content-language: en-US, content-length: '1510',
+      content-type: application/json;charset=UTF-8, date: 'Thu, 18 Apr 2013 13:31:36
+        GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=B8298C511C04B14748E9CB61869E40C6;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}

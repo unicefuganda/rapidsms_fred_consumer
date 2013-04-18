@@ -36,14 +36,17 @@ def run_fred_sync():
 
 def add_catchment_area(facility_json, facility):
     fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
+    existing_catchment_areas = set(facility.catchment_areas.all())
     location_hash = fetcher.get_locations_for_facility(facility_json['properties']['parent'])
     district = Location.objects.filter(name=location_hash["district"], type = "district")[0]
     subcounty = Location.objects.filter(name=location_hash["subcounty"], type = "sub_county", parent_id = district.id)
     if subcounty:
-        existing_catchment_areas = set(facility.catchment_areas.all())
         existing_catchment_areas.update(subcounty)
-        facility.catchment_areas = list(existing_catchment_areas)
-        facility.save(cascade_update=False)
+    else:
+        FredFaciltiyLocation.objects.get_or_create(uuid = facility.uuid, subcounty = location_hash["subcounty"], district = location_hash["district"])
+        existing_catchment_areas.update([district])
+    facility.catchment_areas = list(existing_catchment_areas)
+    facility.save(cascade_update=False)
 
 @celery.task
 def process_facility(facility_json):
