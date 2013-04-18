@@ -79,3 +79,8 @@ class TestFailures(TestCase):
     failure = Failure.objects.create(exception=exception, json=failed_json, action = "PUT")
     self.failUnless(failure.id)
     assert failure.time != None
+
+class TestFredFacilityLocation(TestCase):
+    def test_storage(self):
+        location = FredFaciltiyLocation.objects.create(uuid="uuid", subcounty="subcounty", district="district")
+        self.failUnless(location.id)

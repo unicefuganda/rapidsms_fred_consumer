@@ -33,3 +33,8 @@ class Failure(models.Model):
   exception = models.TextField()
   json      = models.TextField()
   action = models.TextField(default="GET")
+
+class FredFaciltiyLocation(models.Model):
+    uuid      = models.CharField(max_length=100)
+    subcounty = models.CharField(max_length=100)
+    district  = models.CharField(max_length=100)
