@@ -25,7 +25,7 @@ class TestFredFacilitiesFetcher(TestCase):
         self.fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
 
     def test_connect_to_fred_strips_slashes(self):
-        fred_config = {'url': u'http://example////', 'username': '', 'password': ''}
+        fred_config = {'url': u'http://example////', 'username': '', 'password': '', "dhis_org_unit_url": "dhis_org_unit_url"}
         self.fetcher = FredFacilitiesFetcher(fred_config)
         assert self.fetcher.BASE_URL == 'http://example'
 
