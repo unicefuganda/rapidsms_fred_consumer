@@ -1,0 +1,34 @@
+- request:
+    body: null
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
+        charset="UTF-8", Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
+    method: GET
+    url: !!python/unicode '/api-fred/v1/facilities/J2JiemiIQvD.json'
+  response:
+    body: {string: '{"uuid":"667be5c8-93d1-4417-a745-af609184aec9","name":"Aakum HC
+        II","active":true,"href":"http://dhis/api-fred/v1/facilities/J2JiemiIQvD","createdAt":"2012-08-14T10:18:08.391+0000","updatedAt":"2012-08-14T10:18:08.391+0000","coordinates":[34.0259,2.04173],"identifiers":[{"agency":"DHIS2","context":"DHIS2_UID","id":"J2JiemiIQvD"}],"properties":{"dataSets":["V1kJRs8CtW4","CUWV8NOM8wU","XnjkPghTBX9","JbHEBdqRxze","NsgOqhwtYd5","JtF8FUVBIs8","l3HsiUoFN7f","HyQCKhFtTcv","VrVSe3ezRg4","tCBSfITAD6x"],"hierarchy":[{"id":"OwhPJYQ9gqM","level":1,"name":"MOH-Uganda","href":"http://dhis/api/organisationUnitLevels/OwhPJYQ9gqM"},{"id":"V9O2FgyImDt","level":2,"name":"Region","href":"http://dhis/api/organisationUnitLevels/V9O2FgyImDt"},{"id":"a1XiGwfbe81","level":3,"name":"District","href":"http://dhis/api/organisationUnitLevels/a1XiGwfbe81"},{"id":"fgJNYG1Ps13","level":4,"name":"Sub-County","href":"http://dhis/api/organisationUnitLevels/fgJNYG1Ps13"},{"id":"G5kUCanhxGU","level":5,"name":"Health
+        Unit","href":"http://dhis/api/organisationUnitLevels/G5kUCanhxGU"}],"level":5,"ownership":"Government","parent":"y1iun1mJXWa"}}'}
+    headers: {cache-control: 'no-cache, no-store, max-age=0', connection: close, content-language: en-US,
+      content-length: '1122', content-type: application/json;charset=UTF-8, date: 'Thu,
+        18 Apr 2013 11:41:12 GMT', etag: '"060837d1c1f51163117c389f26c3fc6b0"', expires: 'Thu,
+        01 Jan 1970 00:00:00 GMT', pragma: no-cache, server: nginx/1.1.19, set-cookie: JSESSIONID=FAEB18B892067033AEE39994439B3673;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
+        charset="UTF-8", Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
+    method: GET
+    url: !!python/unicode '/api/organisationUnits/y1iun1mJXWa.json'
+  response:
+    body: {string: '{"name":"Usuk Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","shortName":"Usuk
+        Subcounty","parent":{"name":"Katakwi District","created":"2012-12-11T11:24:00.318+0000","lastUpdated":"2012-12-11T11:24:00.318+0000","href":"http://dhis/api/organisationUnits/cSrCFjPKqcG","id":"cSrCFjPKqcG"},"active":true,"featureType":"Polygon","coordinates":"[[[[34.0053,2.0980],[34.1081,2.0623],[34.0927,2.0201],[34.0980,1.9828],[34.0259,1.9254],[34.0310,1.9587],[34.0007,1.9855],[33.8968,1.9807],[33.8758,2.0094],[33.8972,2.0222],[33.8882,2.0368],[33.9007,2.0465],[33.9292,2.0484],[33.9483,2.0703],[33.9931,2.0668],[34.0053,2.0980]]]]","users":[{"name":"Julius
+        Kasamba","created":"2012-12-11T15:04:26.015+0000","lastUpdated":"2012-12-11T15:04:26.015+0000","href":"http://dhis/api/users/bwZxIo7iahf","id":"bwZxIo7iahf"}],"children":[{"name":"St.
+        Anne Usuk HC III","created":"2012-08-14T10:18:08.382+0000","lastUpdated":"2012-08-14T10:18:08.382+0000","href":"http://dhis/api/organisationUnits/vGFHvU2m9uE","id":"vGFHvU2m9uE"},{"name":"Koritok
+        HC II","created":"2012-08-14T10:18:08.371+0000","lastUpdated":"2012-08-14T10:18:08.371+0000","href":"http://dhis/api/organisationUnits/EEwBWZQ7Qre","id":"EEwBWZQ7Qre"},{"name":"Aakum
+        HC II","created":"2012-08-14T10:18:08.391+0000","lastUpdated":"2012-08-14T10:18:08.391+0000","href":"http://dhis/api/organisationUnits/J2JiemiIQvD","id":"J2JiemiIQvD"}],"level":4,"href":"http://dhis/api/organisationUnits/y1iun1mJXWa","id":"y1iun1mJXWa"}'}
+    headers: {connection: close, content-language: en-US, content-length: '1510',
+      content-type: application/json;charset=UTF-8, date: 'Thu, 18 Apr 2013 11:41:13
+        GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=9F64510657E4AB2405A810BD060688E2;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}

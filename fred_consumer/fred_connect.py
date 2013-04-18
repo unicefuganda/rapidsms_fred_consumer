@@ -6,6 +6,7 @@ import base64
 from fred_consumer.models import HealthFacilityIdMap, JobStatus, FredConfig
 from fred_consumer.decorators import *
 from django.core.exceptions import ObjectDoesNotExist
+import re
 
 JSON_EXTENSION = ".json"
 
@@ -15,6 +16,7 @@ class FredFacilitiesFetcher(object):
         auth = base64.b64encode("%(username)s:%(password)s" % connection_setting)
         self.BASE_URL = connection_setting['url'].strip("/")
         self.FACILITY_URL_PREFIX = self.BASE_URL + "/facilities"
+        self.DHIS_ORG_UNIT_URL = connection_setting["dhis_org_unit_url"]
         self.HEADERS = {
             'Content-type': 'application/json; charset="UTF-8"',
             'Authorization': 'Basic '+auth
@@ -75,6 +77,16 @@ class FredFacilitiesFetcher(object):
             status.succeeded(True)
         except Exception:
             status.succeeded(False)
+
+    @capture_generic_exception
+    def get_locations_for_facility(self, facility_id):
+        location_hash = {}
+        fred_facility = self.get_facility(facility_id)
+        parent_facility_url = self.DHIS_ORG_UNIT_URL + fred_facility['properties']['parent']
+        parent_facility = self.get_json(url = parent_facility_url, extension = JSON_EXTENSION)
+        location_hash["subcounty"] = re.sub('Subcounty.*$|Sub\ County.*$', "", parent_facility["name"]).strip()
+        location_hash["district"] = re.sub('District.*$', "", parent_facility["parent"]["name"]).strip()
+        return location_hash
 
     @capture_generic_exception
     def update_facilities_in_provider(self, facility_id, facility):
