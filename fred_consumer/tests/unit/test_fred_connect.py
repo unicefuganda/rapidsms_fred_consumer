@@ -370,8 +370,8 @@ class TestFredFacilitiesFetcher(TestCase):
         assert locations[0].subcounty == "Usuk"
         assert locations[0].district == "Katakwi"
 
-    def test_process_facility_with_no_type(self):
-        facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["V1kJRs8CtW4"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "y1iun1mJXWa"  }}')
+    def test_process_facility_with_type_but_no_dataSets(self):
+        facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "level": 5,    "ownership": "Private Not For Profit",    "parent": "y1iun1mJXWa",    "type": "General Hospital"  }}')
         uuid = facility_json['uuid']
         HealthFacilityType.objects.filter(name="hcii").delete()
         HealthFacilityBase.objects.filter(uuid=uuid).delete()
@@ -390,20 +390,26 @@ class TestFredFacilitiesFetcher(TestCase):
         assert facility.active == True
 
         fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
-        assert fred_facility_details.h033b == True
+        assert fred_facility_details.h033b == False
 
         catchment_areas = facility.catchment_areas.all()
-        assert len(catchment_areas) == 0
+        assert len(catchment_areas) == 1
+        assert catchment_areas[0].name == "Katakwi"
 
-    def test_process_facility_with_no_owner(self):
-        facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["V1kJRs8CtW4"],    "level": 5,    "type": "Private Not For Profit",    "parent": "y1iun1mJXWa"  }}')
+        locations = FredFaciltiyLocation.objects.all()
+        assert len(locations) == 1
+        assert locations[0].subcounty == "Usuk"
+        assert locations[0].district == "Katakwi"
+
+    def test_process_facility_with_type_but_not_from_dhis2_and_no_dataSets(self):
+        facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": " Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "level": 5,    "ownership": "Private Not For Profit",    "parent": "y1iun1mJXWa" }}')
         uuid = facility_json['uuid']
-        HealthFacilityType.objects.filter(name="hcii").delete()
         HealthFacilityBase.objects.filter(uuid=uuid).delete()
         district = Location.objects.create(name="Katakwi", type_id = "district")
+        some_type = HealthFacilityType.objects.create()
+        HealthFacilityBase.objects.create(name=facility_json['name'], uuid=uuid, type=some_type)
 
         assert len(HealthFacilityIdMap.objects.filter(uuid=uuid)) == 0
-        assert len(HealthFacilityBase.objects.filter(uuid=uuid)) == 0
 
         with vcr.use_cassette(FIXTURES + self.__class__.__name__ + "/" + sys._getframe().f_code.co_name + ".yaml"):
             fred_consumer.tasks.process_facility(facility_json)
@@ -415,7 +421,30 @@ class TestFredFacilitiesFetcher(TestCase):
         assert facility.active == True
 
         fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
-        assert fred_facility_details.h033b == True
+        assert fred_facility_details.h033b == False
 
         catchment_areas = facility.catchment_areas.all()
-        assert len(catchment_areas) == 0
+        assert len(catchment_areas) == 1
+        assert catchment_areas[0].name == "Katakwi"
+
+        locations = FredFaciltiyLocation.objects.all()
+        assert len(locations) == 1
+        assert locations[0].subcounty == "Usuk"
+        assert locations[0].district == "Katakwi"
+        
+
+    def test_real_facility_for_facility_json_with_datasets(self):
+        facility_json= json.loads('{"properties": {"dataSets":"hahaha"}}')
+        assert fred_consumer.tasks.real_facility(facility_json, 'mocked_facility')
+    
+    def test_real_facility_for_facility_json_with_type(self):
+        facility_json= json.loads('{"properties": {"type":"hahaha"}}')
+        assert fred_consumer.tasks.real_facility(facility_json, 'mocked_facility')    
+        
+    def test_real_facility_for_facility_having_a_type_in_mtrac(self):
+        facility = MagicMock()
+        facility.type = 'not False'
+        
+        facility_json = json.loads('{"properties": {"no_datasets_or_type":"yes yes yes"} }')
+        
+        assert fred_consumer.tasks.real_facility(facility_json, facility)        

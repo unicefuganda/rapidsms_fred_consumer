@@ -1,0 +1,57 @@
+- request:
+    body: null
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
+        charset="UTF-8", Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
+    method: GET
+    url: !!python/unicode '/api/organisationUnits/y1iun1mJXWa.json'
+  response:
+    body: {string: '{"name":"Usuk Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","shortName":"Usuk
+        Subcounty","parent":{"name":"Katakwi District","created":"2012-12-11T11:24:00.318+0000","lastUpdated":"2012-12-11T11:24:00.318+0000","href":"http://dhis/api/organisationUnits/cSrCFjPKqcG","id":"cSrCFjPKqcG"},"active":true,"featureType":"Polygon","coordinates":"[[[[34.0053,2.0980],[34.1081,2.0623],[34.0927,2.0201],[34.0980,1.9828],[34.0259,1.9254],[34.0310,1.9587],[34.0007,1.9855],[33.8968,1.9807],[33.8758,2.0094],[33.8972,2.0222],[33.8882,2.0368],[33.9007,2.0465],[33.9292,2.0484],[33.9483,2.0703],[33.9931,2.0668],[34.0053,2.0980]]]]","users":[{"name":"Julius
+        Kasamba","created":"2012-12-11T15:04:26.015+0000","lastUpdated":"2012-12-11T15:04:26.015+0000","href":"http://dhis/api/users/bwZxIo7iahf","id":"bwZxIo7iahf"}],"children":[{"name":"St.
+        Anne Usuk HC III","created":"2012-08-14T10:18:08.382+0000","lastUpdated":"2012-08-14T10:18:08.382+0000","href":"http://dhis/api/organisationUnits/vGFHvU2m9uE","id":"vGFHvU2m9uE"},{"name":"Koritok
+        HC II","created":"2012-08-14T10:18:08.371+0000","lastUpdated":"2012-08-14T10:18:08.371+0000","href":"http://dhis/api/organisationUnits/EEwBWZQ7Qre","id":"EEwBWZQ7Qre"},{"name":"Aakum
+        HC II","created":"2012-08-14T10:18:08.391+0000","lastUpdated":"2012-08-14T10:18:08.391+0000","href":"http://dhis/api/organisationUnits/J2JiemiIQvD","id":"J2JiemiIQvD"}],"level":4,"href":"http://dhis/api/organisationUnits/y1iun1mJXWa","id":"y1iun1mJXWa"}'}
+    headers: {connection: close, content-language: en-US, content-length: '1510',
+      content-type: application/json;charset=UTF-8, date: 'Mon, 22 Apr 2013 15:24:29
+        GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=7241CCB78BE58C0E854A12C889154B59;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers: {Authorization: Basic YXBpOlBAc3N3MHJk, Connection: close, Content-Type: application/json;
+        charset="UTF-8", Host: !!python/unicode 'dhis', User-Agent: Python-urllib/2.7}
+    method: GET
+    url: !!python/unicode '/api/organisationUnits/cSrCFjPKqcG.json'
+  response:
+    body: {string: '{"name":"Katakwi District","created":"2012-12-11T11:24:00.318+0000","lastUpdated":"2012-12-11T11:24:00.318+0000","shortName":"Katakwi
+        District","parent":{"name":"Eastern Region","created":"2012-12-11T09:45:36.860+0000","lastUpdated":"2012-12-11T09:45:36.860+0000","href":"http://dhis/api/organisationUnits/0dZ6T35ve4h","id":"0dZ6T35ve4h"},"active":true,"featureType":"Polygon","coordinates":"[[[[34.2217,1.6848],[34.2215,1.6428],[34.0712,1.6488],[34.0703,1.6488],[34.0274,1.6503],[34.0001,1.6473],[33.9543,1.638],[33.9221,1.6431],[33.8976,1.6537],[33.8579,1.6786],[33.811,1.6815],[33.8144,1.7],[33.7978,1.7014],[33.8119,1.7045],[33.8099,1.7179],[33.8709,1.7737],[33.8706,1.8339],[33.8463,1.8631],[33.8448,1.8877],[33.8567,1.8908],[33.8578,1.8832],[33.8986,1.9112],[33.8836,1.9259],[33.8934,1.933],[33.8896,1.9551],[33.9009,1.9478],[33.8861,1.9661],[33.8972,1.9786],[33.8933,1.9965],[33.8759,2.0091],[33.8971,2.0215],[33.8883,2.0366],[33.8993,2.0384],[33.9075,2.0569],[33.8808,2.0732],[33.8919,2.0851],[33.8877,2.0929],[33.9105,2.1048],[33.9017,2.1149],[33.9167,2.122],[33.8982,2.1417],[33.8933,2.1891],[33.8817,2.1925],[33.8756,2.2501],[33.8892,2.2782],[33.9033,2.2817],[33.913,2.3116],[33.9719,2.2752],[34.1519,2.16],[34.2103,2.122],[34.2239,1.9657],[34.2233,1.8868],[34.2233,1.8831],[34.2218,1.8231],[34.2212,1.8052],[34.2219,1.7438],[34.2217,1.6848]]]]","dataSets":[{"name":"District
+        Population Estimates","created":"2013-01-07T15:16:14.314+0000","lastUpdated":"2013-01-07T15:16:14.314+0000","href":"http://dhis/api/dataSets/mkvy739J1Mp","id":"mkvy739J1Mp"},{"name":"Test
+        - HMIS 123:ANC_MAT","created":"2012-08-29T04:49:24.437+0000","lastUpdated":"2012-08-29T04:49:24.437+0000","href":"http://dhis/api/dataSets/HbudxtsIbD8","id":"HbudxtsIbD8"},{"code":"HMIS
+        105","name":"HMIS 123: Outpatient Monthly Report","created":"2012-10-10T14:11:00.788+0000","lastUpdated":"2012-10-10T14:11:00.788+0000","href":"http://dhis/api/dataSets/MvaQ3peApq6","id":"MvaQ3peApq6"},{"code":"HMIS
+        108","name":"HMIS 124: Inpatient Monthly Report","created":"2012-10-10T14:09:58.073+0000","lastUpdated":"2012-10-10T14:09:58.073+0000","href":"http://dhis/api/dataSets/Cm5cTKifbLA","id":"Cm5cTKifbLA"}],"users":[{"name":"Stella
+        Ezaru","created":"2012-12-12T16:01:18.400+0000","lastUpdated":"2012-12-12T16:01:18.400+0000","href":"http://dhis/api/users/n1iiVw3fKAP","id":"n1iiVw3fKAP"},{"name":"Levi
+        Olupot","created":"2012-06-09T01:53:11.849+0000","lastUpdated":"2012-06-09T01:53:11.849+0000","href":"http://dhis/api/users/F5hLJrkiDB6","id":"F5hLJrkiDB6"},{"name":"Samuel
+        Amali","created":"2013-01-11T13:14:00.903+0000","lastUpdated":"2013-01-11T13:14:00.903+0000","href":"http://dhis/api/users/BSPyXSxfdfP","id":"BSPyXSxfdfP"},{"name":"Rita
+        Nankanja","created":"2012-06-09T01:53:11.849+0000","lastUpdated":"2012-06-09T01:53:11.849+0000","href":"http://dhis/api/users/AAgSVWi84iu","id":"AAgSVWi84iu"},{"name":"Anna
+        Yasasira","created":"2013-01-14T12:20:11.730+0000","lastUpdated":"2013-01-14T12:20:11.730+0000","href":"http://dhis/api/users/KDNxOSxuAF6","id":"KDNxOSxuAF6"},{"name":"Ivan
+        Lyazi","created":"2012-05-21T21:28:29.454+0000","lastUpdated":"2012-05-21T21:28:29.454+0000","href":"http://dhis/api/users/EYP4TJF3qcW","id":"EYP4TJF3qcW"},{"name":"Flavia
+        Kazibwe","created":"2012-04-23T16:49:32.711+0000","lastUpdated":"2012-04-23T16:49:32.711+0000","href":"http://dhis/api/users/CXvQ9GepZiw","id":"CXvQ9GepZiw"},{"name":"Isaac
+        Sebuliba","created":"2012-11-14T09:36:50.259+0000","lastUpdated":"2012-11-14T09:36:50.259+0000","href":"http://dhis/api/users/mR0HO0WEFlA","id":"mR0HO0WEFlA"},{"name":"Julius
+        Kasamba","created":"2012-12-11T15:04:26.015+0000","lastUpdated":"2012-12-11T15:04:26.015+0000","href":"http://dhis/api/users/bwZxIo7iahf","id":"bwZxIo7iahf"},{"name":"Festo
+        Etori","created":"2012-06-09T01:53:11.849+0000","lastUpdated":"2012-06-09T01:53:11.849+0000","href":"http://dhis/api/users/rNqRVCLPz3Z","id":"rNqRVCLPz3Z"},{"name":"Caroline
+        Amuge","created":"2012-12-11T13:43:27.448+0000","lastUpdated":"2012-12-11T13:43:27.448+0000","href":"http://dhis/api/users/TmaIoCkI7MP","id":"TmaIoCkI7MP"}],"children":[{"name":"Katakwi
+        Subcounty","created":"2012-10-17T09:46:48.357+0000","lastUpdated":"2012-10-17T09:46:48.357+0000","href":"http://dhis/api/organisationUnits/Y4NFDi1A36x","id":"Y4NFDi1A36x"},{"name":"Katakwi
+        Town Council","created":"2013-01-08T15:11:33.765+0000","lastUpdated":"2013-01-08T15:11:33.765+0000","href":"http://dhis/api/organisationUnits/SCdTXGoDrqJ","id":"SCdTXGoDrqJ"},{"name":"Ongongoja
+        Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","href":"http://dhis/api/organisationUnits/bZBIK5nSjJS","id":"bZBIK5nSjJS"},{"name":"Magoro
+        Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","href":"http://dhis/api/organisationUnits/VnaniHNwR1S","id":"VnaniHNwR1S"},{"name":"Omodoi
+        Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","href":"http://dhis/api/organisationUnits/Y5n22tapmhs","id":"Y5n22tapmhs"},{"name":"Ngariam
+        Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","href":"http://dhis/api/organisationUnits/LmtC4nnHnZr","id":"LmtC4nnHnZr"},{"name":"Usuk
+        Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","href":"http://dhis/api/organisationUnits/y1iun1mJXWa","id":"y1iun1mJXWa"},{"name":"Kapujan
+        Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","href":"http://dhis/api/organisationUnits/ciYirJoS2bT","id":"ciYirJoS2bT"},{"name":"Toroma
+        Subcounty","created":"2012-07-27T19:06:06.202+0000","lastUpdated":"2012-07-27T19:06:06.202+0000","href":"http://dhis/api/organisationUnits/vJLeTItF2kD","id":"vJLeTItF2kD"},{"name":"Palam
+        Sub-County","created":"2013-01-08T15:41:33.033+0000","lastUpdated":"2013-01-08T15:41:33.033+0000","href":"http://dhis/api/organisationUnits/B4c4U2wA0w0","id":"B4c4U2wA0w0"}],"level":3,"href":"http://dhis/api/organisationUnits/cSrCFjPKqcG","id":"cSrCFjPKqcG"}'}
+    headers: {connection: close, content-language: en-US, content-length: '6072',
+      content-type: application/json;charset=UTF-8, date: 'Mon, 22 Apr 2013 15:24:29
+        GMT', server: nginx/1.1.19, set-cookie: JSESSIONID=89A4695E57368CF77213EFB89592296D;
+        Path=/; HttpOnly}
+    status: {code: 200, message: OK}
