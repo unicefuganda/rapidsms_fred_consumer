@@ -91,7 +91,7 @@ class FredFacilitiesFetcher(object):
         parent_facility_url = self.DHIS_ORG_UNIT_URL + parent_id
         parent_facility = self.get_json(url = parent_facility_url, extension = JSON_EXTENSION)
         location_hash["subcounty"] = re.sub('Subcounty.*$|Sub\ County.*$', "", parent_facility["name"]).strip()
-        district = self.get_district(parent_facility_url)
+        district = parent_facility['name'] if 'district' in parent_facility['name'].lower() else self.get_district(parent_facility['parent']['href'])
         location_hash["district"] = re.sub('District.*$', "", district).strip()
         return location_hash
 
