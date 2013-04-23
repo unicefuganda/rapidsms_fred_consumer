@@ -47,6 +47,7 @@ def add_catchment_area(facility_json, facility):
         FredFaciltiyLocation.objects.get_or_create(uuid = facility.uuid, subcounty = location_hash["subcounty"], district = location_hash["district"])
         existing_catchment_areas.update([district])
     facility.catchment_areas = list(existing_catchment_areas)
+    facility.district = district.name
     facility.save(cascade_update=False)
 
 def real_facility(facility_json, facility):
