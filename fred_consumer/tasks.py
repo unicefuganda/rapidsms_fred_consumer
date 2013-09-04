@@ -36,12 +36,12 @@ def run_fred_sync():
 
 def add_catchment_area(facility_json, facility):
     fetcher = FredFacilitiesFetcher(FredConfig.get_settings())
-    existing_catchment_areas = set(facility.catchment_areas.all())    
+    existing_catchment_areas = set(facility.catchment_areas.all())
     location_hash = fetcher.get_locations_for_facility(facility_json['properties']['parent'])
     district = Location.objects.filter(name=location_hash["district"], type = "district")
     district = district[0]
     subcounty = district.get_descendants().filter(name=location_hash["subcounty"], type = "sub_county")
-    if subcounty:      
+    if subcounty:
         existing_catchment_areas.update(subcounty)
     else:
         FredFaciltiyLocation.objects.get_or_create(uuid = facility.uuid, subcounty = location_hash["subcounty"], district = location_hash["district"])
@@ -51,7 +51,7 @@ def add_catchment_area(facility_json, facility):
     facility.save(cascade_update=False)
 
 def real_facility(facility_json, facility):
-  return facility_json["properties"].has_key("dataSets") or facility_json["properties"].has_key("type") or facility.type
+  return facility_json["properties"]["level"] > 4
 
 @celery.task
 def process_facility(facility_json):
@@ -59,7 +59,7 @@ def process_facility(facility_json):
     facility_json['name'] = facility_json['name'].strip()
     HealthFacilityIdMap.store(facility_json['uuid'], facility_json['href'])
     facility = HealthFacilityBase.store_json(facility_json, comment = UPDATE_COMMENT, cascade_update = False)
-    if real_facility(facility_json, facility): 
+    if real_facility(facility_json, facility):
         add_catchment_area(facility_json, facility)
   except Exception, e:
     exception = type(e).__name__ +":"+ str(e)
